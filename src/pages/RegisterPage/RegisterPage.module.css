@@ -1,0 +1,180 @@
+/* Sayfanın en arka zemini */
+.page {
+  height: 100vh;
+  background-color: #111111;
+  display: flex;
+  padding: 32px; /* Dış boşluk 32px */
+  box-sizing: border-box;
+}
+
+/* Kartları tutan ana konteyner */
+.container {
+  display: flex;
+  flex: 1;
+  gap: 16px; /* Kartlar arası 16px */
+  width: 100%;
+}
+
+/* O silik siyah cardlar (EŞİT GENİŞLİK - Tam %50) */
+.formCard, .imageCard {
+  background-color: #1F1F1F;
+  border-radius: 30px;
+  overflow: hidden;
+  height: 100%;
+  flex: 1 1 0; /* Tam eşitlik sağlar */
+  width: 0;
+}
+
+/* SOL PANEL: FORM DÜZENİ */
+.formCard {
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* İçeriği yatayda ortalar */
+  justify-content: center; /* İçeriği dikeyde ortalar */
+  box-sizing: border-box;
+  position: relative;
+}
+
+.logo { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  position: absolute; 
+  top: 40px;
+  left: 40px;
+}
+
+.logoText { font-size: 12px; font-weight: 700; color: #F9F9F9; text-transform: uppercase; }
+
+/* Başlık Alanı (444x180 Ölçüsüne Göre) */
+.title { 
+  font-size: 54px; 
+  font-weight: 700; 
+  line-height: 1.1; 
+  color: #F9F9F9; 
+  letter-spacing: -0.02em;
+  margin-bottom: 40px;
+  max-width: 444px; /* Figma ölçüsü */
+}
+
+.titleAccent { color: rgba(249, 249, 249, 0.5); font-weight: 400; }
+
+/* Form (472px Hug Ölçüsüne Göre) */
+.form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 14px; 
+  width: 100%;
+  max-width: 472px; /* Figma ölçüsü */
+}
+
+.inputBox { 
+  background-color: #262626; 
+ 
+  border: 1px solid rgba(249, 249, 249, 0.1); 
+  border-radius: 12px; 
+  padding: 0 16px; 
+  height: 50px; /* Figma 50 Hug */
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.inputLabel{
+     color:#686868;
+}
+
+.input { flex: 1; background: transparent; border: none; color: #F9F9F9; outline: none; font-size: 14px; }
+
+/* Tüm placeholder (yer tutucu) metinlerin rengi */
+.input::placeholder {
+  color: #F9F9F9;
+  opacity: 1; /* Tarayıcıların varsayılan şeffaflığını sıfırlar */
+}
+
+/* Internet Explorer için (isteğe bağlı) */
+.input:-ms-input-placeholder {
+  color: #F9F9F9;
+}
+
+/* Microsoft Edge için (isteğe bağlı) */
+.input::-ms-input-placeholder {
+  color: #F9F9F9;
+}
+
+/* Input'a tıklandığında (focus olduğunda) placeholder'ı tamamen şeffaf yap */
+.input:focus::placeholder {
+  color: transparent;
+}
+
+/* Buton ve Link Alanı (20px Boşluk) */
+.actions { 
+  display: flex; 
+  align-items: center; 
+  gap: 20px; /* Buton ile yazı arası 20px */
+  margin-top: 20px;
+}
+
+.submitBtn { 
+  background-color: #F9F9F9; 
+  color: #1F1F1F; 
+  border-radius: 30px; 
+  padding: 16px 40px; 
+  font-weight: 700; 
+  border: none; 
+  cursor: pointer;
+}
+
+/* Link Yazısı (Gilroy 500 - 14px - #686868) */
+.link { 
+  font-family: 'Gilroy', sans-serif; 
+  font-size: 14px; 
+  font-weight: 500; 
+  color: #686868; 
+  text-decoration: underline;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* SAĞ PANEL: GÖRSEL KARTI */
+.imageCard { 
+  position: relative; 
+  display: flex; 
+  justify-content: center; 
+}
+
+/* Görselin 80px aşağıdan başlaması */
+.imageCard::after { 
+  content: ""; 
+  position: absolute; 
+  top: 80px; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  background-image: url('../../assets/wallpaper.png'); 
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center top; 
+}
+
+/* ─── TABLET DÜZENİ (Ekran Görselini Kaldırma) ─── */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .imageCard {
+    display: none; /* Tablette görsel kartı tamamen gider */
+  }
+  .formCard {
+    flex: none;
+    width: 100%; /* Form kartı tüm alanı kaplar */
+  }
+}
+
+/* ─── MOBİL DÜZEN (Tablet & Telefon) ─── */
+@media (max-width: 767px) {
+  .page { height: auto; padding: 20px; }
+  .container { flex-direction: column; gap: 10px; }
+  .formCard, .imageCard { width: 100%; flex: none; height: auto; }
+  .formCard { padding: 60px 24px; }
+  .title { font-size: 40px; max-width: 100%; }
+  .imageCard { height: 400px; display: block; }
+  .imageCard::after { top: 40px; }
+}
