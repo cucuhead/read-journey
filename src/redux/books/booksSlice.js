@@ -14,10 +14,11 @@ const booksSlice = createSlice({
   name: 'books',
   initialState,
   reducers: {
-    setRecommended(state, action) {
-      state.recommended = action.payload.results;
-      state.totalPages = action.payload.totalPages;
-    },
+   setRecommended(state, action) {
+  state.recommended = action.payload.results;
+  state.totalPages = action.payload.totalPages;
+  state.currentPage = action.payload.page;
+},
     setCurrentPage(state, action) {
       state.currentPage = action.payload;
     },

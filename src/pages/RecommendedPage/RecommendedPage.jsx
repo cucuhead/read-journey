@@ -1,4 +1,190 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { getRecommendedBooks, addBookToLibrary } from '../../api/booksApi';
+import { setRecommended, setCurrentPage } from '../../redux/books/booksSlice';
+import BookCard from '../../components/shared/BookCard/BookCard';
+import Modal from '../../components/shared/Modal/Modal';
+import styles from './RecommendedPage.module.css';
+
 function RecommendedPage() {
-  return <div>Recommended Page</div>;
+  const dispatch = useDispatch();
+  const { recommended, totalPages, currentPage } = useSelector(state => state.books);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [filters, setFilters] = useState({ title: '', author: '' });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register, handleSubmit } = useForm();
+
+  // Ekran boyutuna göre limit
+  const getLimit = () => {
+    if (window.innerWidth >= 1440) return 10;
+    if (window.innerWidth >= 768) return 8;
+    return 4;
+  };
+
+  const fetchBooks = async (page = 1) => {
+    try {
+      setIsLoading(true);
+      const limit = getLimit();
+      const data = await getRecommendedBooks(page, limit, filters.title, filters.author);
+      console.log('API response:', data);
+      dispatch(setRecommended(data));
+      dispatch(setCurrentPage(page));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks(1);
+  }, [filters]);
+
+  const onFilterSubmit = data => {
+    setFilters({ title: data.title || '', author: data.author || '' });
+  };
+
+  const handleCardClick = book => {
+    setSelectedBook(book);
+    setModalOpen(true);
+  };
+
+  const handleAddToLibrary = async () => {
+    try {
+      await addBookToLibrary(selectedBook._id);
+      setModalOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className={styles.page}>
+      {/* ── Dashboard (Sol/Üst Panel) ── */}
+      <aside className={styles.dashboard}>
+        {/* Filters */}
+        <div className={styles.filtersBlock}>
+          <p className={styles.filtersTitle}>Filters:</p>
+          <form onSubmit={handleSubmit(onFilterSubmit)} className={styles.filtersForm}>
+            <div className={styles.inputBox}>
+              <span className={styles.inputLabel}>Book title:</span>
+              <input
+                className={styles.input}
+                placeholder="Enter text"
+                {...register('title')}
+              />
+            </div>
+            <div className={styles.inputBox}>
+              <span className={styles.inputLabel}>The author:</span>
+              <input
+                className={styles.input}
+                placeholder="Enter text"
+                {...register('author')}
+              />
+            </div>
+            <button type="submit" className={styles.applyBtn}>
+              To apply
+            </button>
+          </form>
+        </div>
+
+        {/* Start your workout */}
+        <div className={styles.workoutBlock}>
+          <h3 className={styles.workoutTitle}>Start your workout</h3>
+          <ol className={styles.workoutList}>
+            <li className={styles.workoutItem}>
+              <span className={styles.workoutNum}>1</span>
+              <p className={styles.workoutText}>
+                <strong>Create a personal library:</strong> add the books you intend to read to it.
+              </p>
+            </li>
+            <li className={styles.workoutItem}>
+              <span className={styles.workoutNum}>2</span>
+              <p className={styles.workoutText}>
+                <strong>Create your first workout:</strong> define a goal, choose a period, start training.
+              </p>
+            </li>
+          </ol>
+          <Link to="/library" className={styles.libraryLink}>
+            My library
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+        </div>
+
+        {/* Quote */}
+        <div className={styles.quoteBlock}>
+          <span className={styles.quoteEmoji}>📚</span>
+          <p className={styles.quoteText}>
+            "Books are <strong>windows</strong> to the world, and reading is a journey into the unknown."
+          </p>
+        </div>
+      </aside>
+
+      {/* ── RecommendedBooks (Sağ/Alt Panel) ── */}
+      <section className={styles.booksSection}>
+        <div className={styles.booksSectionHeader}>
+          <h2 className={styles.booksTitle}>Recommended</h2>
+          <div className={styles.pagination}>
+            <button
+              className={styles.pageBtn}
+              onClick={() => fetchBooks(currentPage - 1)}
+              disabled={currentPage <= 1}
+            >
+              <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+                <path d="M9 1L1 8l8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <button
+              className={styles.pageBtn}
+              onClick={() => fetchBooks(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+            >
+              <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+                <path d="M1 1l8 7-8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className={styles.loader}>Loading...</div>
+        ) : (
+          <ul className={styles.bookGrid}>
+            {recommended.map(book => (
+              <li key={book._id}>
+                <BookCard book={book} onClick={() => handleCardClick(book)} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* ── Modal ── */}
+      {modalOpen && selectedBook && (
+        <Modal onClose={() => setModalOpen(false)}>
+          <div className={styles.modalContent}>
+            <img
+              src={selectedBook.imageUrl}
+              alt={selectedBook.title}
+              className={styles.modalImage}
+            />
+            <h3 className={styles.modalTitle}>{selectedBook.title}</h3>
+            <p className={styles.modalAuthor}>{selectedBook.author}</p>
+            <p className={styles.modalPages}>{selectedBook.totalPages} pages</p>
+            <button className={styles.addBtn} onClick={handleAddToLibrary}>
+              Add to library
+            </button>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
 }
+
 export default RecommendedPage;

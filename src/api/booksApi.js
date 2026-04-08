@@ -1,8 +1,10 @@
 import axiosInstance from './axiosInstance';
 
-export const getRecommendedBooks = async (page = 1, limit = 10) => {
+
+
+export const getRecommendedBooks = async (page = 1, limit = 10, title = '', author = '') => {
   const { data } = await axiosInstance.get('/books/recommend', {
-    params: { page, limit },
+    params: { page, limit, title, author },
   });
   return data;
 };

@@ -1,0 +1,289 @@
+/* ─── Mobile first ─── */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* ── Dashboard (Tüm sol içeriği kapsayan ana kart) ── */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--color-bg-secondary); /* Kart arka planı */
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* İç blokların artık kendi bağımsız kart özelliklerine ihtiyacı yok */
+.filtersBlock, .workoutBlock, .quoteBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtersBlock {
+  gap: 14px;
+}
+
+.filtersTitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.filtersForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 16px;
+  height: 50px;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.applyBtn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  padding: 12px 24px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.2s;
+}
+
+.applyBtn:hover {
+  background-color: var(--color-bg-card);
+}
+
+.workoutBlock {
+  gap: 16px;
+}
+
+.workoutTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.workoutList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.workoutItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.workoutNum {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.workoutText {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.workoutText strong {
+  color: var(--color-text-primary);
+}
+
+.libraryLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.libraryLink:hover {
+  color: var(--color-text-primary);
+}
+
+.quoteBlock {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.quoteEmoji {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.quoteText {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ── Books section ── */
+.booksSection {
+  background-color: var(--color-bg-secondary);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.booksSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.booksTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+}
+
+.pageBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background-color: var(--color-bg-card);
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ─── FLEXBOOK GRID ─── */
+.bookGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.bookGrid > li {
+  flex: 0 0 calc(50% - 10px);
+  max-width: calc(50% - 10px);
+  min-width: 0;
+}
+
+/* ─── Tablet (768px) ─── */
+@media (min-width: 768px) {
+  .page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+
+  /* Tablette de tek kart görünümü devam etsin diye özel grid ayarı gerekirse buraya eklenir */
+
+  .bookGrid > li {
+    flex: 0 0 calc(25% - 15px);
+    max-width: calc(25% - 15px);
+  }
+}
+
+/* ─── Desktop (1440px) ─── */
+@media (min-width: 1440px) {
+  .page {
+    flex-direction: row;
+    align-items: stretch;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 280px;
+    flex-shrink: 0;
+    /* Masaüstünde tek blok yükseklik eşitleme */
+  }
+
+  .booksSection {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bookGrid > li {
+    flex: 0 0 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+  }
+}
