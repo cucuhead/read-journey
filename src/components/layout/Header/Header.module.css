@@ -1,0 +1,222 @@
+/* ─── Header card ─── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-bg-secondary);
+  border-radius: 15px;
+  padding: 0 20px;
+  height: 56px;
+  margin: 16px 16px 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logoText {
+  display: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+}
+
+.nav {
+  display: none;
+}
+
+.navLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.navLink:hover {
+  color: var(--color-text-primary);
+}
+
+.navLinkActive {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-accent-blue);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.userName {
+  display: none;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.logoutBtn {
+  display: none;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.logoutBtn:hover {
+  background-color: var(--color-bg-card);
+}
+
+.burgerBtn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ─── Mobile menu overlay ─── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobileMenu {
+  background-color: var(--color-bg-secondary);
+  width: 60%;
+  max-width: 300px;
+  height: 100%;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.closeBtn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-bottom: 40px;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+.mobileNavLink {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.mobileNavLink:hover {
+  color: var(--color-text-primary);
+}
+
+.mobileNavLinkActive {
+  color: var(--color-text-primary);
+  border-bottom: 2px solid var(--color-accent-blue);
+  padding-bottom: 4px;
+}
+
+.mobileLogoutBtn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  padding: 14px 28px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  align-self: center;
+  transition: background-color 0.2s;
+}
+
+.mobileLogoutBtn:hover {
+  background-color: var(--color-bg-card);
+}
+
+/* ─── Tablet (768px) ─── */
+@media (min-width: 768px) {
+  .header {
+    height: 64px;
+    padding: 0 32px;
+    margin: 16px 16px 0;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .logoutBtn {
+    display: block;
+    
+  }
+
+  .burgerBtn {
+    display: none;
+  }
+
+  /* Tablet ve üstünde overlay CSS seviyesinde de gizli */
+  .overlay {
+    display: none;
+  }
+}
+
+/* ─── Desktop (1440px) ─── */
+@media (min-width: 1440px) {
+  .header {
+    height: 72px;
+    padding: 0 40px;
+    margin: 20px 20px 0;
+  }
+
+  .logoText {
+    display: block;
+  }
+
+  .userName {
+    display: block;
+  }
+}

@@ -1,0 +1,23 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .main {
+    padding: 20px;
+  }
+}
