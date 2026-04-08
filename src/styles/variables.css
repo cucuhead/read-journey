@@ -1,0 +1,30 @@
+:root {
+  /* Colors */
+  --color-bg: #141414;
+  --color-bg-secondary: #1f1f1f;
+  --color-bg-card: #262626;
+
+  --color-text-primary: #f9f9f9;
+  --color-text-secondary: #686868;
+  --color-text-muted: #3e3e3e;
+
+  --color-accent-blue: #4f92f7;
+  --color-accent-green: #30b94d;
+
+  --color-border: #3e3e3e;
+  --color-error: #ef2323;
+  --color-success: #30b94d;
+
+  /* Typography */
+  --font-family: 'Gilroy', sans-serif;
+
+  /* Breakpoints (reference only, use in media queries) */
+  /* mobile:  375px */
+  /* tablet:  768px */
+  /* desktop: 1440px */
+
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 30px;
+}
