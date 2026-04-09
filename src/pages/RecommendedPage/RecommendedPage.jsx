@@ -6,11 +6,13 @@ import { getRecommendedBooks, addBookToLibrary } from '../../api/booksApi';
 import { setRecommended, setCurrentPage } from '../../redux/books/booksSlice';
 import BookCard from '../../components/shared/BookCard/BookCard';
 import Modal from '../../components/shared/Modal/Modal';
+import Dashboard from '../../components/dashboard/Dashboard';
 import styles from './RecommendedPage.module.css';
 
 function RecommendedPage() {
   const dispatch = useDispatch();
   const { recommended, totalPages, currentPage } = useSelector(state => state.books);
+  const myBooks = useSelector(state => state.books.myBooks);
   const [selectedBook, setSelectedBook] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [filters, setFilters] = useState({ title: '', author: '' });
@@ -18,7 +20,6 @@ function RecommendedPage() {
 
   const { register, handleSubmit } = useForm();
 
-  // Ekran boyutuna göre limit
   const getLimit = () => {
     if (window.innerWidth >= 1440) return 10;
     if (window.innerWidth >= 768) return 8;
@@ -30,7 +31,6 @@ function RecommendedPage() {
       setIsLoading(true);
       const limit = getLimit();
       const data = await getRecommendedBooks(page, limit, filters.title, filters.author);
-      console.log('API response:', data);
       dispatch(setRecommended(data));
       dispatch(setCurrentPage(page));
     } catch (err) {
@@ -53,59 +53,43 @@ function RecommendedPage() {
     setModalOpen(true);
   };
 
-  const myBooks = useSelector(state => state.books.myBooks);
-
-const handleAddToLibrary = async () => {
-  try {
-    // Zaten kütüphanede var mı kontrol et
-    const alreadyInLibrary = myBooks.some(
-      book => book.title.toLowerCase() === selectedBook.title.toLowerCase()
-    );
-
-    if (alreadyInLibrary) {
-      alert('This book is already in your library!');
+  const handleAddToLibrary = async () => {
+    try {
+      const alreadyInLibrary = myBooks.some(
+        book => book.title.toLowerCase() === selectedBook.title.toLowerCase()
+      );
+      if (alreadyInLibrary) {
+        alert('This book is already in your library!');
+        setModalOpen(false);
+        return;
+      }
+      await addBookToLibrary(selectedBook._id);
       setModalOpen(false);
-      return;
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to add book');
+      setModalOpen(false);
     }
+  };
 
-    await addBookToLibrary(selectedBook._id);
-    setModalOpen(false);
-  } catch (err) {
-    alert(err.response?.data?.message || 'Failed to add book');
-    setModalOpen(false);
-  }
-};
   return (
     <div className={styles.page}>
-      {/* ── Dashboard (Sol/Üst Panel) ── */}
-      <aside className={styles.dashboard}>
-        {/* Filters */}
+      {/* ── Dashboard ── */}
+      <Dashboard className={styles.dashboard}>
         <div className={styles.filtersBlock}>
           <p className={styles.filtersTitle}>Filters:</p>
           <form onSubmit={handleSubmit(onFilterSubmit)} className={styles.filtersForm}>
             <div className={styles.inputBox}>
               <span className={styles.inputLabel}>Book title:</span>
-              <input
-                className={styles.input}
-                placeholder="Enter text"
-                {...register('title')}
-              />
+              <input className={styles.input} placeholder="Enter text" {...register('title')} />
             </div>
             <div className={styles.inputBox}>
               <span className={styles.inputLabel}>The author:</span>
-              <input
-                className={styles.input}
-                placeholder="Enter text"
-                {...register('author')}
-              />
+              <input className={styles.input} placeholder="Enter text" {...register('author')} />
             </div>
-            <button type="submit" className={styles.applyBtn}>
-              To apply
-            </button>
+            <button type="submit" className={styles.applyBtn}>To apply</button>
           </form>
         </div>
 
-        {/* Start your workout */}
         <div className={styles.workoutBlock}>
           <h3 className={styles.workoutTitle}>Start your workout</h3>
           <ol className={styles.workoutList}>
@@ -130,16 +114,15 @@ const handleAddToLibrary = async () => {
           </Link>
         </div>
 
-        {/* Quote */}
         <div className={styles.quoteBlock}>
           <span className={styles.quoteEmoji}>📚</span>
           <p className={styles.quoteText}>
             "Books are <strong>windows</strong> to the world, and reading is a journey into the unknown."
           </p>
         </div>
-      </aside>
+      </Dashboard>
 
-      {/* ── RecommendedBooks (Sağ/Alt Panel) ── */}
+      {/* ── RecommendedBooks ── */}
       <section className={styles.booksSection}>
         <div className={styles.booksSectionHeader}>
           <h2 className={styles.booksTitle}>Recommended</h2>
@@ -182,11 +165,7 @@ const handleAddToLibrary = async () => {
       {modalOpen && selectedBook && (
         <Modal onClose={() => setModalOpen(false)}>
           <div className={styles.modalContent}>
-            <img
-              src={selectedBook.imageUrl}
-              alt={selectedBook.title}
-              className={styles.modalImage}
-            />
+            <img src={selectedBook.imageUrl} alt={selectedBook.title} className={styles.modalImage} />
             <h3 className={styles.modalTitle}>{selectedBook.title}</h3>
             <p className={styles.modalAuthor}>{selectedBook.author}</p>
             <p className={styles.modalPages}>{selectedBook.totalPages} pages</p>

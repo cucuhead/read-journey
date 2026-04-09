@@ -5,6 +5,7 @@ import { getMyBooks, addCustomBook, removeBook } from '../../api/booksApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMyBooks } from '../../redux/books/booksSlice';
 import Modal from '../../components/shared/Modal/Modal';
+import Dashboard from '../../components/dashboard/Dashboard';
 import styles from './LibraryPage.module.css';
 
 function LibraryPage() {
@@ -22,19 +23,18 @@ function LibraryPage() {
 
   const { register, handleSubmit, reset } = useForm();
 
+  const fetchMyBooks = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getMyBooks();
+      dispatch(setMyBooks(data));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-
- const fetchMyBooks = async () => {
-  try {
-    setIsLoading(true);
-    const data = await getMyBooks();
-    dispatch(setMyBooks(data));
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setIsLoading(false);
-  }
-};
   useEffect(() => {
     fetchMyBooks();
     fetchRecommended();
@@ -50,30 +50,28 @@ function LibraryPage() {
     }
   };
 
-const onAddBook = async data => {
-  try {
-    const isDuplicate = myBooks.some(
-      book => book.title.toLowerCase().trim() === data.title.toLowerCase().trim()
-    );
-
-    if (isDuplicate) {
-      alert('This book is already in your library!');
-      return;
+  const onAddBook = async data => {
+    try {
+      const isDuplicate = myBooks.some(
+        book => book.title.toLowerCase().trim() === data.title.toLowerCase().trim()
+      );
+      if (isDuplicate) {
+        alert('This book is already in your library!');
+        return;
+      }
+      await addCustomBook({
+        title: data.title,
+        author: data.author,
+        totalPages: Number(data.pages),
+      });
+      reset();
+      setSuccessModal(true);
+      fetchMyBooks();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Failed to add book');
     }
-
-    await addCustomBook({
-      title: data.title,
-      author: data.author,
-      totalPages: Number(data.pages),
-    });
-    reset();
-    setSuccessModal(true);
-    fetchMyBooks();
-  } catch (err) {
-    console.error(err);
-    alert(err.response?.data?.message || 'Failed to add book');
-  }
-};
+  };
 
   const handleRemoveBook = async (e, bookId) => {
     e.stopPropagation();
@@ -112,39 +110,24 @@ const onAddBook = async data => {
 
   return (
     <div className={styles.page}>
-      {/* ── Dashboard (Sol/Üst Panel) ── */}
-      <aside className={styles.dashboard}>
+      {/* ── Dashboard ── */}
+      <Dashboard className={styles.dashboard}>
         <div className={styles.addBookBlock}>
           <p className={styles.blockTitle}>Create your library:</p>
           <form onSubmit={handleSubmit(onAddBook)} className={styles.form}>
             <div className={styles.inputBox}>
               <span className={styles.inputLabel}>Book title:</span>
-              <input
-                className={styles.input}
-                placeholder="Enter text"
-                {...register('title', { required: true })}
-              />
+              <input className={styles.input} placeholder="Enter text" {...register('title', { required: true })} />
             </div>
             <div className={styles.inputBox}>
               <span className={styles.inputLabel}>The author:</span>
-              <input
-                className={styles.input}
-                placeholder="Enter text"
-                {...register('author', { required: true })}
-              />
+              <input className={styles.input} placeholder="Enter text" {...register('author', { required: true })} />
             </div>
             <div className={styles.inputBox}>
               <span className={styles.inputLabel}>Number of pages:</span>
-              <input
-                className={styles.input}
-                placeholder="0"
-                type="number"
-                {...register('pages', { required: true, min: 1 })}
-              />
+              <input className={styles.input} placeholder="0" type="number" {...register('pages', { required: true, min: 1 })} />
             </div>
-            <button type="submit" className={styles.addBtn}>
-              Add book
-            </button>
+            <button type="submit" className={styles.addBtn}>Add book</button>
           </form>
         </div>
 
@@ -153,11 +136,7 @@ const onAddBook = async data => {
           <div className={styles.recommendedGrid}>
             {recommendedBooks.map(book => (
               <div key={book._id} className={styles.recommendedCard}>
-                <img
-                  src={book.imageUrl}
-                  alt={book.title}
-                  className={styles.recommendedImg}
-                />
+                <img src={book.imageUrl} alt={book.title} className={styles.recommendedImg} />
                 <p className={styles.recommendedTitle}>{book.title}</p>
                 <p className={styles.recommendedAuthor}>{book.author}</p>
               </div>
@@ -170,25 +149,17 @@ const onAddBook = async data => {
             </svg>
           </Link>
         </div>
-        
-        {/* Quote Block (Tasarımda varsa eklenebilir, yoksa kalabilir) */}
-      </aside>
+      </Dashboard>
 
       {/* ── Library Section ── */}
       <section className={styles.librarySection}>
         <div className={styles.libraryHeader}>
           <h2 className={styles.libraryTitle}>My library</h2>
-
           <div className={styles.filterWrapper}>
-            <button
-              className={styles.filterBtn}
-              onClick={() => setFilterOpen(p => !p)}
-            >
+            <button className={styles.filterBtn} onClick={() => setFilterOpen(p => !p)}>
               {filterOptions.find(o => o.value === filter)?.label}
-              <svg
-                width="16" height="16" viewBox="0 0 16 16" fill="none"
-                style={{ transform: filterOpen ? 'rotate(180deg)' : 'rotate(0)', transition: '0.2s' }}
-              >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                style={{ transform: filterOpen ? 'rotate(180deg)' : 'rotate(0)', transition: '0.2s' }}>
                 <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
@@ -222,28 +193,26 @@ const onAddBook = async data => {
         ) : (
           <ul className={styles.bookGrid}>
             {filteredBooks.map(book => (
-              /* styles.bookItem sınıfı CSS'deki calc hesaplamaları için eklendi */
               <li key={book._id} className={styles.bookItem}>
                 <div className={styles.bookCard} onClick={() => handleBookClick(book)}>
                   <div className={styles.imageWrapper}>
                     <img src={book.imageUrl} alt={book.title} className={styles.bookImage} />
                   </div>
                   <div className={styles.bottomInfo}>
-  <div className={styles.bookMeta}>
-    <p className={styles.bookTitle}>{book.title}</p>
-    <p className={styles.bookAuthor}>{book.author}</p>
-  </div>
-  <button
-    className={styles.deleteBtn}
-    onClick={e => handleRemoveBook(e, book._id)}
-    aria-label="Delete book"
-  >
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 4h12M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  </button>
-</div>
-                  
+                    <div className={styles.bookMeta}>
+                      <p className={styles.bookTitle}>{book.title}</p>
+                      <p className={styles.bookAuthor}>{book.author}</p>
+                    </div>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={e => handleRemoveBook(e, book._id)}
+                      aria-label="Delete book"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 4h12M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}
@@ -266,13 +235,8 @@ const onAddBook = async data => {
 
       {bookModal && selectedBook && (
         <Modal onClose={() => setBookModal(false)}>
-          {/* Modal içeriği CSS'deki .bookModalContent ve .modalImage sınıflarıyla uyumlu */}
           <div className={styles.bookModalContent}>
-            <img
-              src={selectedBook.imageUrl}
-              alt={selectedBook.title}
-              className={styles.modalImage}
-            />
+            <img src={selectedBook.imageUrl} alt={selectedBook.title} className={styles.modalImage} />
             <h3 className={styles.modalTitle}>{selectedBook.title}</h3>
             <p className={styles.modalAuthor}>{selectedBook.author}</p>
             <p className={styles.modalPages}>{selectedBook.totalPages} pages</p>
