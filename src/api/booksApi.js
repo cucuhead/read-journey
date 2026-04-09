@@ -45,10 +45,9 @@ export const stopReading = async (bookId, page) => {
   });
   return data;
 };
-
 export const deleteReadingSession = async (bookId, readingId) => {
   const { data } = await axiosInstance.delete('/books/reading', {
-    data: { bookId, readingId },
+    params: { bookId, readingId },
   });
   return data;
 };
