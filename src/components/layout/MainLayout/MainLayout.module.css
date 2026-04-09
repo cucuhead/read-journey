@@ -1,13 +1,15 @@
 .layout {
-  min-height: 100vh;
+  min-height: 90vh;
   background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
 }
 
 .main {
-  flex: 1;
+  /* flex: 1; */
   padding: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {

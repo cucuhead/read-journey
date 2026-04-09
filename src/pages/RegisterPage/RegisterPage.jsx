@@ -17,8 +17,12 @@ function RegisterPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(registerSchema) });
+  } = useForm({ resolver: yupResolver(registerSchema), mode: 'onChange' });
+
+  const passwordValue = watch('password', '');
+  const isPasswordValid = passwordValue.length >= 7 && !errors.password;
 
   const onSubmit = async data => {
     try {
@@ -40,8 +44,6 @@ function RegisterPage() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        
-        {/* SOL/ÜST PANEL: FORM KARTI */}
         <div className={styles.formCard}>
           <div className={styles.logo}>
             <svg width="24" height="17" viewBox="0 0 24 17" fill="none">
@@ -51,8 +53,8 @@ function RegisterPage() {
           </div>
 
           <h1 className={styles.title}>
-            Expand your mind, reading {' '}
-            <span className={styles.titleAccent}> a book</span>
+            Expand your mind, reading{' '}
+            <span className={styles.titleAccent}>a book</span>
           </h1>
 
           <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -60,17 +62,18 @@ function RegisterPage() {
             <div className={styles.fieldWrapper}>
               <div className={`${styles.inputBox} ${errors.name ? styles.inputBoxError : ''}`}>
                 <span className={styles.inputLabel}>Name:</span>
-                <input
-                  className={styles.input}
-                  placeholder="Your Name"
-                  {...register('name')}
-                />
+                <input className={styles.input} placeholder="Your Name" {...register('name')} />
+                {errors.name && (
+                  <span className={styles.iconError}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="#EF2323" strokeWidth="1.2"/>
+                      <path d="M8 5v4M8 11v.5" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                )}
               </div>
               {errors.name && (
-                <p className={styles.errorMsg}>
-                  <span className={styles.errorIcon}>!</span>
-                  {errors.name.message}
-                </p>
+                <p className={styles.errorMsg}>{errors.name.message}</p>
               )}
             </div>
 
@@ -78,23 +81,24 @@ function RegisterPage() {
             <div className={styles.fieldWrapper}>
               <div className={`${styles.inputBox} ${errors.email ? styles.inputBoxError : ''}`}>
                 <span className={styles.inputLabel}>Mail:</span>
-                <input
-                  className={styles.input}
-                  placeholder="your@email.com"
-                  {...register('email')}
-                />
+                <input className={styles.input} placeholder="your@email.com" {...register('email')} />
+                {errors.email && (
+                  <span className={styles.iconError}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="#EF2323" strokeWidth="1.2"/>
+                      <path d="M8 5v4M8 11v.5" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                )}
               </div>
               {errors.email && (
-                <p className={styles.errorMsg}>
-                  <span className={styles.errorIcon}>!</span>
-                  {errors.email.message}
-                </p>
+                <p className={styles.errorMsg}>{errors.email.message}</p>
               )}
             </div>
 
             {/* Password */}
             <div className={styles.fieldWrapper}>
-              <div className={`${styles.inputBox} ${errors.password ? styles.inputBoxError : ''}`}>
+              <div className={`${styles.inputBox} ${errors.password ? styles.inputBoxError : ''} ${isPasswordValid ? styles.inputBoxSuccess : ''}`}>
                 <span className={styles.inputLabel}>Password:</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -102,11 +106,9 @@ function RegisterPage() {
                   placeholder="Your password here"
                   {...register('password')}
                 />
-                <button
-                  type="button"
-                  className={styles.eyeBtn}
-                  onClick={() => setShowPassword(prev => !prev)}
-                >
+
+                {/* Göz ikonu HER ZAMAN görünsün */}
+                <button type="button" className={styles.eyeBtn} onClick={() => setShowPassword(prev => !prev)}>
                   {showPassword ? (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"/>
@@ -118,29 +120,45 @@ function RegisterPage() {
                     </svg>
                   )}
                 </button>
+
+                {/* Hata ikonu */}
+                {errors.password && (
+                  <span className={styles.iconError}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="#EF2323" strokeWidth="1.2"/>
+                      <path d="M8 5v4M8 11v.5" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                )}
+
+                {/* Başarı ikonu */}
+                {isPasswordValid && (
+                  <span className={styles.iconSuccess}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="#30B94D" strokeWidth="1.2"/>
+                      <path d="M5 8l2 2 4-4" stroke="#30B94D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                )}
               </div>
+              
               {errors.password && (
-                <p className={styles.errorMsg}>
-                  <span className={styles.errorIcon}>!</span>
-                  {errors.password.message}
-                </p>
+                <p className={styles.errorMsg}>{errors.password.message}</p>
+              )}
+              {isPasswordValid && (
+                <p className={styles.successMsg}>Password is secure</p>
               )}
             </div>
 
             {serverError && <p className={styles.serverError}>{serverError}</p>}
 
             <div className={styles.actions}>
-              <button type="submit" className={styles.submitBtn}>
-                Registration
-              </button>
-              <Link to="/login" className={styles.link}>
-                Already have an account?
-              </Link>
+              <button type="submit" className={styles.submitBtn}>Registration</button>
+              <Link to="/login" className={styles.link}>Already have an account?</Link>
             </div>
           </form>
         </div>
 
-        {/* SAĞ/ALT PANEL: GÖRSEL KARTI */}
         <div className={styles.imageCard} />
       </div>
     </div>

@@ -53,15 +53,28 @@ function RecommendedPage() {
     setModalOpen(true);
   };
 
-  const handleAddToLibrary = async () => {
-    try {
-      await addBookToLibrary(selectedBook._id);
-      setModalOpen(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const myBooks = useSelector(state => state.books.myBooks);
 
+const handleAddToLibrary = async () => {
+  try {
+    // Zaten kütüphanede var mı kontrol et
+    const alreadyInLibrary = myBooks.some(
+      book => book.title.toLowerCase() === selectedBook.title.toLowerCase()
+    );
+
+    if (alreadyInLibrary) {
+      alert('This book is already in your library!');
+      setModalOpen(false);
+      return;
+    }
+
+    await addBookToLibrary(selectedBook._id);
+    setModalOpen(false);
+  } catch (err) {
+    alert(err.response?.data?.message || 'Failed to add book');
+    setModalOpen(false);
+  }
+};
   return (
     <div className={styles.page}>
       {/* ── Dashboard (Sol/Üst Panel) ── */}

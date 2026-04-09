@@ -157,6 +157,66 @@
   background-position: center top; 
 }
 
+.inputBoxError {
+  border-color: #EF2323 !important;
+}
+
+.inputBoxSuccess {
+  border-color: #30B94D !important;
+}
+
+.iconError {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.iconSuccess {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: #EF2323;
+  padding-left: 4px;
+  margin-top: 4px;
+}
+
+.successMsg {
+  font-size: 12px;
+  color: #30B94D;
+  padding-left: 4px;
+  margin-top: 4px;
+}
+
+.serverError {
+  font-size: 13px;
+  color: #EF2323;
+  text-align: center;
+}
+.eyeBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* İkonun rengini belirleyen ana kısım burası */
+  color: #F9F9F9; /* Saf beyaz ya da tasarımındaki açık gri rengi */
+  transition: color 0.2s ease;
+}
+
+.eyeBtn:hover {
+  color: #ffffff; /* Üzerine gelince biraz daha parlaması için */
+}
+
+/* Eğer SVG içinde stroke veya fill özelliği sabitlenmişse garantiye alalım */
+.eyeBtn svg {
+  stroke: currentColor; /* SVG'nin rengini yukarıdaki 'color' değerinden almasını sağlar */
+}
 /* ─── TABLET DÜZENİ (Ekran Görselini Kaldırma) ─── */
 @media (min-width: 768px) and (max-width: 1279px) {
   .imageCard {

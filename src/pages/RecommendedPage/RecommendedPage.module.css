@@ -286,4 +286,55 @@
     flex: 0 0 calc(20% - 16px);
     max-width: calc(20% - 16px);
   }
+}.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.modalImage {
+  width: 140px;
+  height: 213px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.modalAuthor {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.modalPages {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.addBtn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.addBtn:hover {
+  background-color: var(--color-bg-card);
 }

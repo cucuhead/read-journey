@@ -26,6 +26,7 @@ export const removeBook = async bookId => {
 
 export const getMyBooks = async () => {
   const { data } = await axiosInstance.get('/books/own');
+  console.log('getMyBooks response:', data);
   return data;
 };
 
