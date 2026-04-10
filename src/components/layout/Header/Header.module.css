@@ -221,3 +221,49 @@
     display: block;
   }
 }
+
+.confirmModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px;
+  text-align: center;
+}
+
+.confirmTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F9F9F9;
+}
+
+.confirmText {
+  font-size: 14px;
+  color: rgba(249, 249, 249, 0.5);
+}
+
+.confirmBtns {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.confirmYes {
+  background-color: #EF2323;
+  color: #F9F9F9;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.confirmNo {
+  background-color: transparent;
+  color: #F9F9F9;
+  border: 1px solid rgba(249, 249, 249, 0.2);
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-weight: 700;
+  cursor: pointer;
+}

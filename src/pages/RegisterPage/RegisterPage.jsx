@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import registerSchema from '../../schemas/registerSchema';
 import { signUp } from '../../api/authApi';
+import Loader from '../../components/shared/Loader/Loader.jsx';
 import { setCredentials } from '../../redux/auth/authSlice';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
@@ -15,6 +16,7 @@ import { EyeOpenIcon, EyeClosedIcon, ErrorIcon, SuccessIcon } from '../../assets
 function RegisterPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
@@ -30,6 +32,7 @@ function RegisterPage() {
 
   const onSubmit = async data => {
     try {
+        setIsLoading(true);
       const response = await signUp(data);
       dispatch(
         setCredentials({
@@ -41,10 +44,15 @@ function RegisterPage() {
       navigate('/recommended');
     } catch (error) {
       showToast(error.response?.data?.message || 'Registration failed');
-    }
+    }finally {
+    setIsLoading(false);
+  }
   };
 
   return (
+   <>
+   {isLoading && <Loader />}
+   
     <div className={styles.page}>
       <div className={styles.container}>
         <div className={styles.formCard}>
@@ -125,6 +133,8 @@ function RegisterPage() {
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
+   
+   </>
   );
 }
 

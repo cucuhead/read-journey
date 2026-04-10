@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Modal from '../../shared/Modal/Modal.jsx';
+import Loader from '../../shared/Loader/Loader.jsx';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/auth/authSlice';
@@ -10,6 +12,8 @@ function Header() {
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+const [logoutConfirm, setLogoutConfirm] = useState(false);
 
   // Ekran büyüyünce menüyü kapat
   useEffect(() => {
@@ -22,22 +26,39 @@ function Header() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-    } catch {
-      // backend hatası olsa bile client'ı temizle
-    } finally {
-      dispatch(logout());
-      navigate('/login');
-      setMenuOpen(false);
-    }
-  };
+const handleLogout = async () => {
+  try {
+    setLogoutLoading(true);
+    await signOut();
+  } catch {
+    // backend hatası olsa bile logout yap
+  } finally {
+    dispatch(logout());
+    navigate('/login');
+    setLogoutConfirm(false);
+    setLogoutLoading(false);
+    setMenuOpen(false);
+  }
+};
 
   const firstLetter = user?.name?.charAt(0).toUpperCase() || 'U';
 
   return (
     <>
+
+    {logoutLoading && <Loader />}
+    {logoutConfirm && (
+  <Modal onClose={() => setLogoutConfirm(false)}>
+    <div className={styles.confirmModal}>
+      <h3 className={styles.confirmTitle}>Log out</h3>
+      <p className={styles.confirmText}>Are you sure you want to log out?</p>
+      <div className={styles.confirmBtns}>
+        <button className={styles.confirmYes} onClick={handleLogout}>Yes</button>
+        <button className={styles.confirmNo} onClick={() => setLogoutConfirm(false)}>Cancel</button>
+      </div>
+    </div>
+  </Modal>
+)}
       <header className={styles.header}>
         <NavLink to="/recommended" className={styles.logo}>
           <svg width="24" height="17" viewBox="0 0 24 17" fill="none">
@@ -68,9 +89,9 @@ function Header() {
         <div className={styles.right}>
           <div className={styles.avatar}>{firstLetter}</div>
           <span className={styles.userName}>{user?.name}</span>
-          <button className={styles.logoutBtn} onClick={handleLogout}>
-            Log out
-          </button>
+         <button className={styles.logoutBtn} onClick={() => setLogoutConfirm(true)}>
+  Log out
+</button>
           <button
             className={styles.burgerBtn}
             onClick={() => setMenuOpen(true)}

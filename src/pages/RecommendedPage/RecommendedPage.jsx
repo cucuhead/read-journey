@@ -6,9 +6,11 @@ import { getRecommendedBooks, addBookToLibrary, getMyBooks } from '../../api/boo
 import { setRecommended, setCurrentPage, setMyBooks } from '../../redux/books/booksSlice';
 import BookCard from '../../components/shared/BookCard/BookCard';
 import Modal from '../../components/shared/Modal/Modal';
+import Loader from '../../components/shared/Loader/Loader';
 import Dashboard from '../../components/dashboard/Dashboard';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
+
 import styles from './RecommendedPage.module.css';
 // İkonları merkezden alıyoruz
 import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '../../assets/Icons/icons';
@@ -86,7 +88,9 @@ function RecommendedPage() {
   };
 
   return (
-    <div className={styles.page}>
+   <>
+   {isLoading && <Loader />}
+     <div className={styles.page} >
       <Dashboard className={styles.dashboard}>
         <div className={styles.filtersBlock}>
           <p className={styles.filtersTitle}>Filters:</p>
@@ -147,7 +151,7 @@ function RecommendedPage() {
         </div>
 
         {isLoading ? (
-          <div className={styles.loader}>Loading...</div>
+          <Loader />
         ) : (
           <ul className={styles.bookGrid}>
             {recommended.map(book => (
@@ -173,6 +177,8 @@ function RecommendedPage() {
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
+   </>
+  
   );
 }
 

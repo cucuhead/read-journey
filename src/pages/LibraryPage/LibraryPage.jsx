@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMyBooks } from '../../redux/books/booksSlice';
 import Modal from '../../components/shared/Modal/Modal';
 import Dashboard from '../../components/dashboard/Dashboard';
+import { BookIcon } from '../../assets/Icons/icons';
+import Loader from '../../components/shared/Loader/Loader';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
 import styles from './LibraryPage.module.css';
@@ -115,6 +117,10 @@ function LibraryPage() {
   });
 
   return (
+   
+   <>
+
+   {isLoading && <Loader />}
     <div className={styles.page}>
       <Dashboard className={styles.dashboard}>
         <div className={styles.addBookBlock}>
@@ -181,10 +187,12 @@ function LibraryPage() {
         </div>
 
         {isLoading ? (
-          <div className={styles.emptyState}>Loading...</div>
+            <Loader />
         ) : filteredBooks.length === 0 ? (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>📚</div>
+             <div className={styles.emptyIcon}>
+    <BookIcon />
+  </div>
             <p className={styles.emptyText}>
               To start training, add{' '}
               <Link to="/recommended" className={styles.emptyLink}>some of your books</Link>
@@ -241,6 +249,7 @@ function LibraryPage() {
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
+   </>
   );
 }
 

@@ -7,6 +7,7 @@ import { startReading, stopReading, deleteReadingSession } from '../../api/books
 import axiosInstance from '../../api/axiosInstance';
 import Dashboard from '../../components/dashboard/Dashboard';
 import Modal from '../../components/shared/Modal/Modal';
+import Loader from '../../components/shared/Loader/Loader';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
 import styles from './ReadingPage.module.css';
@@ -31,6 +32,7 @@ function ReadingPage() {
 
   const [isReading, setIsReading] = useState(false);
   const [finishedModal, setFinishedModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('diary');
   const [progress, setProgress] = useState([]);
   const { toast, showToast, hideToast } = useToast();
@@ -51,6 +53,7 @@ function ReadingPage() {
 
   const fetchBookProgress = async () => {
     try {
+       setIsLoading(true);
       const { data } = await axiosInstance.get(`/books/${book._id}`);
       const completedProgress = (data.progress || []).filter(p => p.status === 'inactive');
       setProgress(completedProgress);
@@ -58,11 +61,14 @@ function ReadingPage() {
       setIsReading(hasActive);
     } catch (err) {
       console.error(err);
-    }
+    } finally {
+    setIsLoading(false);
+  }
   };
 
   const onSubmit = async data => {
     try {
+         setIsLoading(true);
       if (!isReading) {
         await startReading(book._id, Number(data.page));
         setIsReading(true);
@@ -78,7 +84,9 @@ function ReadingPage() {
       }
     } catch (err) {
       showToast(err.response?.data?.message || 'Something went wrong', 'error');
-    }
+    }  finally {
+    setIsLoading(false);
+  }
   };
 
   const handleDeleteReading = async (readingId) => {
@@ -107,6 +115,9 @@ function ReadingPage() {
   if (!book) return null;
 
   return (
+   <>
+   {isLoading && <Loader />}
+   
     <div className={styles.page}>
       <Dashboard className={styles.dashboard}>
         <div className={styles.addReadingBlock}>
@@ -275,6 +286,8 @@ function ReadingPage() {
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
+   
+   </>
   );
 }
 
