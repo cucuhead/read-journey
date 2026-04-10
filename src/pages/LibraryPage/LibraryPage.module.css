@@ -476,7 +476,7 @@
   .page {
     
     flex-direction: row;
-     align-items: flex-start;/* Her iki panelin boyunu eşitle */
+     align-items: stretch;/* Her iki panelin boyunu eşitle */
   }
 .dashboard {
     width: 350px;
@@ -485,7 +485,7 @@
   }
 
   .librarySection {
-    height: 100%;
+    height: 70vh;;
   }
 
   .bookItem {
