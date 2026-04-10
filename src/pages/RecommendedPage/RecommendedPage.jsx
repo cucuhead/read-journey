@@ -2,21 +2,26 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { getRecommendedBooks, addBookToLibrary } from '../../api/booksApi';
-import { setRecommended, setCurrentPage } from '../../redux/books/booksSlice';
+import { getRecommendedBooks, addBookToLibrary, getMyBooks } from '../../api/booksApi';
+import { setRecommended, setCurrentPage, setMyBooks } from '../../redux/books/booksSlice';
 import BookCard from '../../components/shared/BookCard/BookCard';
 import Modal from '../../components/shared/Modal/Modal';
 import Dashboard from '../../components/dashboard/Dashboard';
+import Toast from '../../components/shared/Toast/Toast';
+import useToast from '../../hooks/useToast';
 import styles from './RecommendedPage.module.css';
+// İkonları merkezden alıyoruz
+import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '../../assets/Icons/icons';
 
 function RecommendedPage() {
   const dispatch = useDispatch();
   const { recommended, totalPages, currentPage } = useSelector(state => state.books);
-  const myBooks = useSelector(state => state.books.myBooks);
+  
   const [selectedBook, setSelectedBook] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [filters, setFilters] = useState({ title: '', author: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
 
   const { register, handleSubmit } = useForm();
 
@@ -53,27 +58,35 @@ function RecommendedPage() {
     setModalOpen(true);
   };
 
+  const myBooks = useSelector(state => state.books.myBooks);
+
   const handleAddToLibrary = async () => {
-    try {
-      const alreadyInLibrary = myBooks.some(
-        book => book.title.toLowerCase() === selectedBook.title.toLowerCase()
-      );
-      if (alreadyInLibrary) {
-        alert('This book is already in your library!');
-        setModalOpen(false);
-        return;
-      }
-      await addBookToLibrary(selectedBook._id);
+    const alreadyInLibrary = myBooks.some(
+      book => book.title.toLowerCase().trim() === selectedBook.title.toLowerCase().trim()
+    );
+
+    if (alreadyInLibrary) {
+      showToast('This book is already in your library!', 'error');
       setModalOpen(false);
+      return;
+    }
+
+    try {
+      await addBookToLibrary(selectedBook._id);
+      const updatedBooks = await getMyBooks();
+      dispatch(setMyBooks(updatedBooks));
+      
+      setModalOpen(false);
+      showToast('Book added to library!', 'success');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to add book');
+      const errorMessage = err.response?.data?.message || 'Failed to add book';
+      showToast(errorMessage, 'error');
       setModalOpen(false);
     }
   };
 
   return (
     <div className={styles.page}>
-      {/* ── Dashboard ── */}
       <Dashboard className={styles.dashboard}>
         <div className={styles.filtersBlock}>
           <p className={styles.filtersTitle}>Filters:</p>
@@ -108,9 +121,7 @@ function RecommendedPage() {
           </ol>
           <Link to="/library" className={styles.libraryLink}>
             My library
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <ArrowRightIcon />
           </Link>
         </div>
 
@@ -122,28 +133,15 @@ function RecommendedPage() {
         </div>
       </Dashboard>
 
-      {/* ── RecommendedBooks ── */}
       <section className={styles.booksSection}>
         <div className={styles.booksSectionHeader}>
           <h2 className={styles.booksTitle}>Recommended</h2>
           <div className={styles.pagination}>
-            <button
-              className={styles.pageBtn}
-              onClick={() => fetchBooks(currentPage - 1)}
-              disabled={currentPage <= 1}
-            >
-              <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-                <path d="M9 1L1 8l8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <button className={styles.pageBtn} onClick={() => fetchBooks(currentPage - 1)} disabled={currentPage <= 1}>
+              <ChevronLeftIcon />
             </button>
-            <button
-              className={styles.pageBtn}
-              onClick={() => fetchBooks(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-            >
-              <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-                <path d="M1 1l8 7-8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <button className={styles.pageBtn} onClick={() => fetchBooks(currentPage + 1)} disabled={currentPage >= totalPages}>
+              <ChevronRightIcon />
             </button>
           </div>
         </div>
@@ -161,7 +159,6 @@ function RecommendedPage() {
         )}
       </section>
 
-      {/* ── Modal ── */}
       {modalOpen && selectedBook && (
         <Modal onClose={() => setModalOpen(false)}>
           <div className={styles.modalContent}>
@@ -169,12 +166,12 @@ function RecommendedPage() {
             <h3 className={styles.modalTitle}>{selectedBook.title}</h3>
             <p className={styles.modalAuthor}>{selectedBook.author}</p>
             <p className={styles.modalPages}>{selectedBook.totalPages} pages</p>
-            <button className={styles.addBtn} onClick={handleAddToLibrary}>
-              Add to library
-            </button>
+            <button className={styles.addBtn} onClick={handleAddToLibrary}>Add to library</button>
           </div>
         </Modal>
       )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
   );
 }

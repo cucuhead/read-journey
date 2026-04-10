@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './redux/auth/authSlice';
+import { setMyBooks } from './redux/books/booksSlice';
 import { getCurrentUser } from './api/authApi';
+import { getMyBooks } from './api/booksApi';
 import AppRouter from './router/AppRouter';
 
 function App() {
@@ -11,16 +13,19 @@ function App() {
   useEffect(() => {
     if (!token) return;
 
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
       try {
-        const data = await getCurrentUser();
-        dispatch(setUser({ name: data.name, email: data.email }));
+        const user = await getCurrentUser();
+        dispatch(setUser({ name: user.name, email: user.email }));
+
+        const books = await getMyBooks();
+        dispatch(setMyBooks(books));
       } catch {
         // token geçersizse axiosInstance zaten logout yapacak
       }
     };
 
-    fetchUser();
+    fetchUserData();
   }, [token, dispatch]);
 
   return <AppRouter />;

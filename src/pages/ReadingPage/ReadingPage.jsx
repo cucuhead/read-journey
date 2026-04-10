@@ -7,7 +7,14 @@ import { startReading, stopReading, deleteReadingSession } from '../../api/books
 import axiosInstance from '../../api/axiosInstance';
 import Dashboard from '../../components/dashboard/Dashboard';
 import Modal from '../../components/shared/Modal/Modal';
+import Toast from '../../components/shared/Toast/Toast';
+import useToast from '../../hooks/useToast';
 import styles from './ReadingPage.module.css';
+
+// İkon isimlerini senin Icons.jsx dosyandaki export isimlerine göre kontrol etmelisin
+// Eğer isimler farklıysa (örn: HourglassIcon, BookIcon) buradan değiştirebilirsin
+// ReadingPage.jsx dosyasının üstünde
+import { IconChart as DiaryIcon, IconHourglass as StatisticsIcon, TrashIcon } from '../../assets/Icons/icons';
 
 const pageSchema = Yup.object({
   page: Yup.number()
@@ -26,6 +33,7 @@ function ReadingPage() {
   const [finishedModal, setFinishedModal] = useState(false);
   const [activeTab, setActiveTab] = useState('diary');
   const [progress, setProgress] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(pageSchema),
@@ -33,9 +41,13 @@ function ReadingPage() {
   });
 
   useEffect(() => {
-    if (!book) navigate('/library');
-    else fetchBookProgress();
-  }, [book, navigate]);
+    if (!book) {
+      navigate('/library');
+    } else {
+      fetchBookProgress();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchBookProgress = async () => {
     try {
@@ -65,7 +77,7 @@ function ReadingPage() {
         }
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Something went wrong');
+      showToast(err.response?.data?.message || 'Something went wrong', 'error');
     }
   };
 
@@ -74,7 +86,7 @@ function ReadingPage() {
       await deleteReadingSession(book._id, readingId);
       await fetchBookProgress();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete');
+      showToast(err.response?.data?.message || 'Failed to delete', 'error');
     }
   };
 
@@ -96,9 +108,7 @@ function ReadingPage() {
 
   return (
     <div className={styles.page}>
-      {/* ── Dashboard ── */}
       <Dashboard className={styles.dashboard}>
-        {/* AddReading formu */}
         <div className={styles.addReadingBlock}>
           <p className={styles.blockLabel}>{isReading ? 'Stop page:' : 'Start page:'}</p>
           <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -118,106 +128,95 @@ function ReadingPage() {
           </form>
         </div>
 
-        {/* Diary / Statistics tabs */}
         {progress.length > 0 ? (
           <div className={styles.detailsBlock}>
-            {/* Tab header */}
             <div className={styles.tabHeader}>
               <h3 className={styles.tabTitle}>
                 {activeTab === 'diary' ? 'Diary' : 'Statistics'}
               </h3>
               <div className={styles.tabBtns}>
+                {/* Diary Butonu */}
                 <button
                   className={`${styles.tabBtn} ${activeTab === 'diary' ? styles.tabBtnActive : ''}`}
                   onClick={() => setActiveTab('diary')}
                   title="Diary"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <rect x="3" y="3" width="7" height="7" rx="1"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1"/>
-                  </svg>
+                  <DiaryIcon />
                 </button>
+                {/* Statistics (Kum Saati) Butonu */}
                 <button
                   className={`${styles.tabBtn} ${activeTab === 'statistics' ? styles.tabBtnActive : ''}`}
                   onClick={() => setActiveTab('statistics')}
                   title="Statistics"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M21 21H3M21 21V8l-6-5-6 5v13M9 21v-6h6v6"/>
-                  </svg>
+                  <StatisticsIcon />
                 </button>
               </div>
             </div>
 
-            {/* Diary */}
             {activeTab === 'diary' && (
-  <div className={styles.diaryList}>
-    {progress.map((item, idx) => (
-      <div key={idx} className={styles.diaryItem}>
-        <div className={styles.diaryDateRow}>
-          <div className={styles.diaryCheckbox} />
-          <span className={styles.diaryDate}>{formatDate(item.finishReading)}</span>
-          <span className={styles.diaryPages}>{item.finishPage - item.startPage} pages</span>
-        </div>
-        <div className={styles.diaryStats}>
-          <div className={styles.diaryStat}>
-            <p className={styles.diaryPercent}>{calcPercent(item.startPage, item.finishPage)}%</p>
-            <p className={styles.diaryMinutes}>{calcMinutes(item.startReading, item.finishReading)} minutes</p>
-          </div>
-          <div className={styles.diarySpeedRow}>
-            <div className={styles.diarySpeedBar}>
-              <div
-                className={styles.diarySpeedFill}
-                style={{ width: `${Math.min(item.speed / 2, 100)}%` }}
-              />
-            </div>
-            <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
-            <button
-              className={styles.diaryDeleteBtn}
-              onClick={() => handleDeleteReading(item._id)}
-              aria-label="Delete"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M2 4h12M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+              <div className={styles.diaryList}>
+                {progress.map((item, idx) => (
+                  <div key={idx} className={styles.diaryItem}>
+                    <div className={styles.diaryDateRow}>
+                      <div className={styles.diaryCheckbox} />
+                      <span className={styles.diaryDate}>{formatDate(item.finishReading)}</span>
+                      <span className={styles.diaryPages}>{item.finishPage - item.startPage} pages</span>
+                    </div>
+                    <div className={styles.diaryStats}>
+                      <div className={styles.diaryStat}>
+                        <p className={styles.diaryPercent}>{calcPercent(item.startPage, item.finishPage)}%</p>
+                        <p className={styles.diaryMinutes}>{calcMinutes(item.startReading, item.finishReading)} minutes</p>
+                      </div>
+                      <div className={styles.diarySpeedRow}>
+                        <div className={styles.diarySpeedBar}>
+                          <div
+                            className={styles.diarySpeedFill}
+                            style={{ width: `${Math.min(item.speed / 2, 100)}%` }}
+                          />
+                        </div>
+                        <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
+                        <button
+                          className={styles.diaryDeleteBtn}
+                          onClick={() => handleDeleteReading(item._id)}
+                          aria-label="Delete"
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            {/* Statistics */}
             {activeTab === 'statistics' && (
               <div className={styles.statistics}>
                 <p className={styles.statsQuote}>
                   Each page, each chapter is a new round of knowledge, a new step towards understanding. By rewriting statistics, we create our own reading history.
                 </p>
                 <div className={styles.statsCircle}>
-                  <svg width="120" height="120" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="#262626" strokeWidth="10"/>
+                  <svg width="160" height="160" viewBox="0 0 160 160">
+                    <circle cx="80" cy="80" r="65" fill="none" stroke="#262626" strokeWidth="12"/>
                     <circle
-                      cx="60" cy="60" r="50"
+                      cx="80" cy="80" r="65"
                       fill="none"
                       stroke="#30B94D"
-                      strokeWidth="10"
-                      strokeDasharray={`${2 * Math.PI * 50}`}
-                      strokeDashoffset={`${2 * Math.PI * 50 * (1 - progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages)}`}
+                      strokeWidth="12"
+                      strokeDasharray={`${2 * Math.PI * 65}`}
+                      strokeDashoffset={`${2 * Math.PI * 65 * (1 - Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages, 1))}`}
                       strokeLinecap="round"
-                      transform="rotate(-90 60 60)"
+                      transform="rotate(-90 80 80)"
                     />
-                    <text x="60" y="65" textAnchor="middle" fill="#F9F9F9" fontSize="18" fontWeight="700">
-                      {Math.round(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100)}%
+                    <text x="80" y="86" textAnchor="middle" fill="#F9F9F9" fontSize="24" fontWeight="700">
+                      {Math.round(Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100, 100))}%
                     </text>
                   </svg>
                 </div>
                 <div className={styles.statsInfo}>
                   <span className={styles.statsGreenDot} />
                   <p className={styles.statsText}>
-                    {Math.round(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100)}%
+                    {Math.round(Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100, 100))}%
                   </p>
                   <p className={styles.statsSubtext}>
                     {progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0)} pages read
@@ -240,7 +239,6 @@ function ReadingPage() {
         )}
       </Dashboard>
 
-      {/* ── MyBook ── */}
       <section className={styles.myBookSection}>
         <h2 className={styles.sectionTitle}>My reading</h2>
         <div className={styles.bookContent}>
@@ -263,7 +261,6 @@ function ReadingPage() {
         </button>
       </section>
 
-      {/* ── Kitap bitti modal ── */}
       {finishedModal && (
         <Modal onClose={() => setFinishedModal(false)}>
           <div className={styles.finishedModal}>
@@ -275,6 +272,8 @@ function ReadingPage() {
           </div>
         </Modal>
       )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
   );
 }

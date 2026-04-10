@@ -6,13 +6,17 @@ import { useDispatch } from 'react-redux';
 import loginSchema from '../../schemas/loginSchema';
 import { signIn } from '../../api/authApi';
 import { setCredentials } from '../../redux/auth/authSlice';
+import Toast from '../../components/shared/Toast/Toast';
+import useToast from '../../hooks/useToast';
 import styles from './LoginPage.module.css';
+// İkonları merkezden alıyoruz
+import { EyeOpenIcon, EyeClosedIcon, ErrorIcon, SuccessIcon } from '../../assets/Icons/icons';
 
 function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const { toast, showToast, hideToast } = useToast();
 
   const {
     register,
@@ -25,9 +29,10 @@ function LoginPage() {
   const isPasswordValid = passwordValue.length >= 7 && !errors.password;
 
   const onSubmit = async data => {
+    console.log('submit called', data);
     try {
-      setServerError('');
       const response = await signIn(data);
+      console.log('success', response);
       dispatch(
         setCredentials({
           user: { name: response.name, email: response.email },
@@ -37,7 +42,8 @@ function LoginPage() {
       );
       navigate('/recommended');
     } catch (error) {
-      setServerError(error.response?.data?.message || 'Login failed');
+      console.log('error', error);
+      showToast(error.response?.data?.message || 'Login failed');
     }
   };
 
@@ -58,30 +64,19 @@ function LoginPage() {
           </h1>
 
           <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            {/* Email */}
             <div className={styles.fieldWrapper}>
               <div className={`${styles.inputBox} ${errors.email ? styles.inputBoxError : ''}`}>
                 <span className={styles.inputLabel}>Mail:</span>
-                <input
-                  className={styles.input}
-                  placeholder="your@email.com"
-                  {...register('email')}
-                />
+                <input className={styles.input} placeholder="your@email.com" {...register('email')} />
                 {errors.email && (
                   <span className={styles.iconError}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#EF2323" strokeWidth="1.2"/>
-                      <path d="M8 5v4M8 11v.5" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round"/>
-                    </svg>
+                    <ErrorIcon />
                   </span>
                 )}
               </div>
-              {errors.email && (
-                <p className={styles.errorMsg}>{errors.email.message}</p>
-              )}
+              {errors.email && <p className={styles.errorMsg}>{errors.email.message}</p>}
             </div>
 
-            {/* Password */}
             <div className={styles.fieldWrapper}>
               <div className={`${styles.inputBox} ${errors.password ? styles.inputBoxError : ''} ${isPasswordValid ? styles.inputBoxSuccess : ''}`}>
                 <span className={styles.inputLabel}>Password:</span>
@@ -91,51 +86,23 @@ function LoginPage() {
                   placeholder="Yourpasswordhere"
                   {...register('password')}
                 />
-
-                {/* Göz ikonu HER ZAMAN görünsün */}
                 <button type="button" className={styles.eyeBtn} onClick={() => setShowPassword(prev => !prev)}>
-                  {showPassword ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"/>
-                    </svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  )}
+                  {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
                 </button>
-
-                {/* Hata ikonu */}
                 {errors.password && (
                   <span className={styles.iconError}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#EF2323" strokeWidth="1.2"/>
-                      <path d="M8 5v4M8 11v.5" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round"/>
-                    </svg>
+                    <ErrorIcon />
                   </span>
                 )}
-
-                {/* Başarı ikonu */}
                 {isPasswordValid && (
                   <span className={styles.iconSuccess}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#30B94D" strokeWidth="1.2"/>
-                      <path d="M5 8l2 2 4-4" stroke="#30B94D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <SuccessIcon />
                   </span>
                 )}
               </div>
-              
-              {errors.password && (
-                <p className={styles.errorMsg}>{errors.password.message}</p>
-              )}
-              {isPasswordValid && (
-                <p className={styles.successMsg}>Password is secure</p>
-              )}
+              {errors.password && <p className={styles.errorMsg}>{errors.password.message}</p>}
+              {isPasswordValid && <p className={styles.successMsg}>Password is secure</p>}
             </div>
-
-            {serverError && <p className={styles.serverError}>{serverError}</p>}
 
             <div className={styles.actions}>
               <button type="submit" className={styles.submitBtn}>Log In</button>
@@ -143,9 +110,10 @@ function LoginPage() {
             </div>
           </form>
         </div>
-
         <div className={styles.imageCard} />
       </div>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
   );
 }

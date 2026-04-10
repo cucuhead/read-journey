@@ -6,12 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMyBooks } from '../../redux/books/booksSlice';
 import Modal from '../../components/shared/Modal/Modal';
 import Dashboard from '../../components/dashboard/Dashboard';
+import Toast from '../../components/shared/Toast/Toast';
+import useToast from '../../hooks/useToast';
 import styles from './LibraryPage.module.css';
+// İkonları merkezden alıyoruz
+import { ArrowRightIcon, ChevronDownIcon, TrashIcon } from '../../assets/Icons/icons';
 
 function LibraryPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const myBooks = useSelector(state => state.books.myBooks);
+  const { toast, showToast, hideToast } = useToast();
 
   const [filter, setFilter] = useState('all');
   const [filterOpen, setFilterOpen] = useState(false);
@@ -53,10 +58,12 @@ function LibraryPage() {
   const onAddBook = async data => {
     try {
       const isDuplicate = myBooks.some(
-        book => book.title.toLowerCase().trim() === data.title.toLowerCase().trim()
+        book => book.title.toLowerCase().trim() === data.title.toLowerCase().trim() && 
+                book.author.toLowerCase().trim() === data.author.toLowerCase().trim()
       );
+
       if (isDuplicate) {
-        alert('This book is already in your library!');
+        showToast('This book is already in your library!', 'error');
         return;
       }
       await addCustomBook({
@@ -68,8 +75,7 @@ function LibraryPage() {
       setSuccessModal(true);
       fetchMyBooks();
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || 'Failed to add book');
+      showToast(err.response?.data?.message || 'Failed to add book', 'error');
     }
   };
 
@@ -79,7 +85,7 @@ function LibraryPage() {
       await removeBook(bookId);
       fetchMyBooks();
     } catch (err) {
-      console.error(err);
+      showToast(err.response?.data?.message || 'Failed to remove book', 'error');
     }
   };
 
@@ -110,7 +116,6 @@ function LibraryPage() {
 
   return (
     <div className={styles.page}>
-      {/* ── Dashboard ── */}
       <Dashboard className={styles.dashboard}>
         <div className={styles.addBookBlock}>
           <p className={styles.blockTitle}>Create your library:</p>
@@ -144,24 +149,20 @@ function LibraryPage() {
           </div>
           <Link to="/recommended" className={styles.homeLink}>
             Home
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <ArrowRightIcon />
           </Link>
         </div>
       </Dashboard>
 
-      {/* ── Library Section ── */}
       <section className={styles.librarySection}>
         <div className={styles.libraryHeader}>
           <h2 className={styles.libraryTitle}>My library</h2>
           <div className={styles.filterWrapper}>
             <button className={styles.filterBtn} onClick={() => setFilterOpen(p => !p)}>
               {filterOptions.find(o => o.value === filter)?.label}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                style={{ transform: filterOpen ? 'rotate(180deg)' : 'rotate(0)', transition: '0.2s' }}>
-                <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <div style={{ transform: filterOpen ? 'rotate(180deg)' : 'rotate(0)', transition: '0.2s', display: 'flex' }}>
+                <ChevronDownIcon />
+              </div>
             </button>
             {filterOpen && (
               <div className={styles.filterDropdown}>
@@ -203,14 +204,8 @@ function LibraryPage() {
                       <p className={styles.bookTitle}>{book.title}</p>
                       <p className={styles.bookAuthor}>{book.author}</p>
                     </div>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={e => handleRemoveBook(e, book._id)}
-                      aria-label="Delete book"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M2 4h12M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" stroke="#EF2323" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                    <button className={styles.deleteBtn} onClick={e => handleRemoveBook(e, book._id)} aria-label="Delete book">
+                      <TrashIcon />
                     </button>
                   </div>
                 </div>
@@ -220,7 +215,6 @@ function LibraryPage() {
         )}
       </section>
 
-      {/* ── Modallar ── */}
       {successModal && (
         <Modal onClose={() => setSuccessModal(false)}>
           <div className={styles.successModal}>
@@ -240,12 +234,12 @@ function LibraryPage() {
             <h3 className={styles.modalTitle}>{selectedBook.title}</h3>
             <p className={styles.modalAuthor}>{selectedBook.author}</p>
             <p className={styles.modalPages}>{selectedBook.totalPages} pages</p>
-            <button className={styles.startBtn} onClick={handleStartReading}>
-              Start reading
-            </button>
+            <button className={styles.startBtn} onClick={handleStartReading}>Start reading</button>
           </div>
         </Modal>
       )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </div>
   );
 }
