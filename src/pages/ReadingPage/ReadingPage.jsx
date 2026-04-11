@@ -12,10 +12,6 @@ import { BookIcon } from '../../assets/Icons/icons';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
 import styles from './ReadingPage.module.css';
-
-// İkon isimlerini senin Icons.jsx dosyandaki export isimlerine göre kontrol etmelisin
-// Eğer isimler farklıysa (örn: HourglassIcon, BookIcon) buradan değiştirebilirsin
-// ReadingPage.jsx dosyasının üstünde
 import { IconChart as DiaryIcon, IconHourglass as StatisticsIcon, TrashIcon } from '../../assets/Icons/icons';
 
 const pageSchema = Yup.object({
@@ -54,40 +50,49 @@ function ReadingPage() {
 
   const fetchBookProgress = async () => {
     try {
-       setIsLoading(true);
+      setIsLoading(true);
       const { data } = await axiosInstance.get(`/books/${book._id}`);
-      const completedProgress = (data.progress || []).filter(p => p.status === 'inactive') .reverse();
+      const completedProgress = (data.progress || []).filter(p => p.status === 'inactive').reverse();
       setProgress(completedProgress);
       const hasActive = (data.progress || []).some(p => p.status === 'active');
       setIsReading(hasActive);
     } catch (err) {
       console.error(err);
     } finally {
-    setIsLoading(false);
-  }
+      setIsLoading(false);
+    }
   };
 
   const onSubmit = async data => {
     try {
-         setIsLoading(true);
+      setIsLoading(true);
       if (!isReading) {
+        if (Number(data.page) > book.totalPages) {
+          showToast(`Maximum page is ${book.totalPages}`, 'error');
+          return;
+        }
         await startReading(book._id, Number(data.page));
         setIsReading(true);
         reset();
       } else {
-        await stopReading(book._id, Number(data.page));
+        const stopPage = Number(data.page);
+        if (stopPage > book.totalPages) {
+          showToast(`Maximum page is ${book.totalPages}`, 'error');
+          return;
+        }
+        await stopReading(book._id, stopPage);
         setIsReading(false);
         reset();
         await fetchBookProgress();
-        if (Number(data.page) >= book.totalPages) {
+        if (stopPage >= book.totalPages) {
           setFinishedModal(true);
         }
       }
     } catch (err) {
       showToast(err.response?.data?.message || 'Something went wrong', 'error');
-    }  finally {
-    setIsLoading(false);
-  }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeleteReading = async (readingId) => {
@@ -116,202 +121,203 @@ function ReadingPage() {
   if (!book) return null;
 
   return (
-   <>
-   {isLoading && <Loader />}
-   
-    <div className={styles.page}>
-      <Dashboard className={styles.dashboard}>
-        <div className={styles.addReadingBlock}>
-          <p className={styles.blockLabel}>{isReading ? 'Stop page:' : 'Start page:'}</p>
-          <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-            <div className={`${styles.inputBox} ${errors.page ? styles.inputBoxError : ''}`}>
-              <span className={styles.inputLabel}>Page number:</span>
-              <input
-                className={styles.input}
-                type="number"
-                placeholder="0"
-                {...register('page')}
-              />
-            </div>
-            {errors.page && <p className={styles.errorMsg}>{errors.page.message}</p>}
-            <button type="submit" className={styles.actionBtn}>
-              {isReading ? 'To stop' : 'To start'}
-            </button>
-          </form>
-        </div>
-
-        {progress.length > 0 ? (
-          <div className={styles.detailsBlock}>
-            <div className={styles.tabHeader}>
-              <h3 className={styles.tabTitle}>
-                {activeTab === 'diary' ? 'Diary' : 'Statistics'}
-              </h3>
-              <div className={styles.tabBtns}>
-                {/* Diary Butonu */}
-                <button
-                  className={`${styles.tabBtn} ${activeTab === 'diary' ? styles.tabBtnActive : ''}`}
-                  onClick={() => setActiveTab('diary')}
-                  title="Diary"
-                >
-                  <DiaryIcon />
-                </button>
-                {/* Statistics (Kum Saati) Butonu */}
-                <button
-                  className={`${styles.tabBtn} ${activeTab === 'statistics' ? styles.tabBtnActive : ''}`}
-                  onClick={() => setActiveTab('statistics')}
-                  title="Statistics"
-                >
-                  <StatisticsIcon />
-                </button>
+    <>
+      {isLoading && <Loader />}
+      <div className={styles.page}>
+        <Dashboard className={styles.dashboard}>
+          <div className={styles.addReadingBlock}>
+            <p className={styles.blockLabel}>{isReading ? 'Stop page:' : 'Start page:'}</p>
+            <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+              <div className={`${styles.inputBox} ${errors.page ? styles.inputBoxError : ''}`}>
+                <span className={styles.inputLabel}>Page number:</span>
+                <input
+                  className={styles.input}
+                  type="number"
+                  placeholder="0"
+                  {...register('page')}
+                />
               </div>
-            </div>
+              {errors.page && <p className={styles.errorMsg}>{errors.page.message}</p>}
+              <button type="submit" className={styles.actionBtn}>
+                {isReading ? 'To stop' : 'To start'}
+              </button>
+            </form>
+          </div>
 
-            {activeTab === 'diary' && (
-              <div className={styles.diaryList}>
-                {progress.map((item, idx) => (
-                  <div key={idx} className={styles.diaryItem}>
-                    <div className={styles.diaryDateRow}>
-                      <div className={styles.diaryCheckbox} />
-                      <span className={styles.diaryDate}>{formatDate(item.finishReading)}</span>
-                      <span className={styles.diaryPages}>{item.finishPage - item.startPage} pages</span>
-                    </div>
-                    <div className={styles.diaryStats}>
-                      <div className={styles.diaryStat}>
-                        <p className={styles.diaryPercent}>{calcPercent(item.startPage, item.finishPage)}%</p>
-                        <p className={styles.diaryMinutes}>{calcMinutes(item.startReading, item.finishReading)} minutes</p>
+          {progress.length > 0 ? (
+            <div className={styles.detailsBlock}>
+              <div className={styles.tabHeader}>
+                <h3 className={styles.tabTitle}>
+                  {activeTab === 'diary' ? 'Diary' : 'Statistics'}
+                </h3>
+                <div className={styles.tabBtns}>
+                  <button
+                    className={`${styles.tabBtn} ${activeTab === 'diary' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('diary')}
+                    title="Diary"
+                  >
+                    <DiaryIcon />
+                  </button>
+                  <button
+                    className={`${styles.tabBtn} ${activeTab === 'statistics' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('statistics')}
+                    title="Statistics"
+                  >
+                    <StatisticsIcon />
+                  </button>
+                </div>
+              </div>
+
+              {activeTab === 'diary' && (
+                <div className={styles.diaryList}>
+                  {progress.map((item, idx) => (
+                    <div key={idx} className={styles.diaryItem}>
+                      <div className={styles.diaryDateRow}>
+                        <div className={styles.diaryCheckbox} />
+                        <span className={styles.diaryDate}>{formatDate(item.finishReading)}</span>
+                        <span className={styles.diaryPages}>{item.finishPage - item.startPage} pages</span>
                       </div>
-                    <div className={styles.diarySpeedRow}>
-  <svg width="60" height="20" viewBox="0 0 60 20" className={styles.diaryAreaChart}>
-    <defs>
-      <linearGradient id={`grad-${idx}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#30B94D" stopOpacity="0.6"/>
-        <stop offset="100%" stopColor="#30B94D" stopOpacity="0.05"/>
-      </linearGradient>
-    </defs>
-    <path
-      d={`M0,20 L0,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} C20,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} 40,2 60,2 L60,20 Z`}
-      fill={`url(#grad-${idx})`}
-    />
-    <path
-      d={`M0,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} C20,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} 40,2 60,2`}
-      stroke="#30B94D"
-      strokeWidth="1.5"
-      fill="none"
-      strokeLinecap="round"
-    />
-  </svg>
-  <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
-  <button
-    className={styles.diaryDeleteBtn}
-    onClick={() => handleDeleteReading(item._id)}
-    aria-label="Delete"
-  >
-    <TrashIcon />
-  </button>
-</div>
+                      <div className={styles.diaryStats}>
+                        <div className={styles.diaryStat}>
+                          <p className={styles.diaryPercent}>{calcPercent(item.startPage, item.finishPage)}%</p>
+                          <p className={styles.diaryMinutes}>{calcMinutes(item.startReading, item.finishReading)} minutes</p>
+                        </div>
+                        <div className={styles.diarySpeedRow}>
+                          <svg width="60" height="20" viewBox="0 0 60 20" className={styles.diaryAreaChart}>
+                            <defs>
+                              <linearGradient id={`grad-${idx}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#30B94D" stopOpacity="0.6"/>
+                                <stop offset="100%" stopColor="#30B94D" stopOpacity="0.05"/>
+                              </linearGradient>
+                            </defs>
+                            {(() => {
+                              const maxSpeed = Math.max(...progress.map(p => p.speed || 1));
+                              const startY = 20 - (((progress[idx + 1]?.speed || 0) / maxSpeed) * 18);
+                              const endY = 20 - ((item.speed / maxSpeed) * 18);
+                              return (
+                                <>
+                                  <path
+                                    d={`M0,${startY} C30,${startY} 30,${endY} 60,${endY} L60,20 L0,20 Z`}
+                                    fill={`url(#grad-${idx})`}
+                                  />
+                                  <path
+                                    d={`M0,${startY} C30,${startY} 30,${endY} 60,${endY}`}
+                                    stroke="#30B94D"
+                                    strokeWidth="1.5"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                  />
+                                </>
+                              );
+                            })()}
+                          </svg>
+                          <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
+                          <button
+                            className={styles.diaryDeleteBtn}
+                            onClick={() => handleDeleteReading(item._id)}
+                            aria-label="Delete"
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  ))}
+                </div>
+              )}
+
+              {activeTab === 'statistics' && (
+                <div className={styles.statistics}>
+                  <p className={styles.statsQuote}>
+                    Each page, each chapter is a new round of knowledge, a new step towards understanding. By rewriting statistics, we create our own reading history.
+                  </p>
+                  <div className={styles.statsCircle}>
+                    <svg width="160" height="160" viewBox="0 0 160 160">
+                      <circle cx="80" cy="80" r="65" fill="none" stroke="#262626" strokeWidth="12"/>
+                      <circle
+                        cx="80" cy="80" r="65"
+                        fill="none"
+                        stroke="#30B94D"
+                        strokeWidth="12"
+                        strokeDasharray={`${2 * Math.PI * 65}`}
+                        strokeDashoffset={`${2 * Math.PI * 65 * (1 - Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages, 1))}`}
+                        strokeLinecap="round"
+                        transform="rotate(-90 80 80)"
+                      />
+                      <text x="80" y="86" textAnchor="middle" fill="#F9F9F9" fontSize="24" fontWeight="700">
+                        {Math.round(Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100, 100))}%
+                      </text>
+                    </svg>
                   </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'statistics' && (
-              <div className={styles.statistics}>
-                <p className={styles.statsQuote}>
-                  Each page, each chapter is a new round of knowledge, a new step towards understanding. By rewriting statistics, we create our own reading history.
-                </p>
-                <div className={styles.statsCircle}>
-                  <svg width="160" height="160" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="65" fill="none" stroke="#262626" strokeWidth="12"/>
-                    <circle
-                      cx="80" cy="80" r="65"
-                      fill="none"
-                      stroke="#30B94D"
-                      strokeWidth="12"
-                      strokeDasharray={`${2 * Math.PI * 65}`}
-                      strokeDashoffset={`${2 * Math.PI * 65 * (1 - Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages, 1))}`}
-                      strokeLinecap="round"
-                      transform="rotate(-90 80 80)"
-                    />
-                    <text x="80" y="86" textAnchor="middle" fill="#F9F9F9" fontSize="24" fontWeight="700">
+                  <div className={styles.statsInfo}>
+                    <span className={styles.statsGreenDot} />
+                    <p className={styles.statsText}>
                       {Math.round(Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100, 100))}%
-                    </text>
-                  </svg>
+                    </p>
+                    <p className={styles.statsSubtext}>
+                      {progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0)} pages read
+                    </p>
+                  </div>
                 </div>
-                <div className={styles.statsInfo}>
-                  <span className={styles.statsGreenDot} />
-                  <p className={styles.statsText}>
-                    {Math.round(Math.min(progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0) / book.totalPages * 100, 100))}%
-                  </p>
-                  <p className={styles.statsSubtext}>
-                    {progress.reduce((acc, p) => acc + (p.finishPage - p.startPage), 0)} pages read
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.progressBlock}>
-            <h3 className={styles.progressTitle}>Progress</h3>
-            <p className={styles.progressDesc}>
-              Here you will see when and how much you read.
-              To record, click on the red button above.
-            </p>
-            <div className={styles.progressEmpty}>
-              <div className={styles.starCircle}>⭐</div>
+              )}
             </div>
-          </div>
-        )}
-      </Dashboard>
-
-      <section className={styles.myBookSection}>
-        <h2 className={styles.sectionTitle}>My reading</h2>
-        <div className={styles.bookContent}>
-    <div className={styles.bookCover}>
-  {book.imageUrl ? (
-    <img
-      src={book.imageUrl}
-      alt={book.title}
-      className={styles.bookImage}
-    />
-  ) : (
-    <div className={styles.bookPlaceholder}>
-      <BookIcon />
-    </div>
-  )}
-</div>
-          <h3 className={styles.bookTitle}>{book.title}</h3>
-          <p className={styles.bookAuthor}>{book.author}</p>
-        </div>
-        <button
-          className={styles.readingBtn}
-          onClick={handleSubmit(onSubmit)}
-          aria-label={isReading ? 'Stop reading' : 'Start reading'}
-        >
-          {isReading ? (
-            <span className={styles.stopIcon} />
           ) : (
-            <span className={styles.startIcon} />
+            <div className={styles.progressBlock}>
+              <h3 className={styles.progressTitle}>Progress</h3>
+              <p className={styles.progressDesc}>
+                Here you will see when and how much you read.
+                To record, click on the red button above.
+              </p>
+              <div className={styles.progressEmpty}>
+                <div className={styles.starCircle}>⭐</div>
+              </div>
+            </div>
           )}
-        </button>
-      </section>
+        </Dashboard>
 
-      {finishedModal && (
-        <Modal onClose={() => setFinishedModal(false)}>
-          <div className={styles.finishedModal}>
-            <span className={styles.finishedEmoji}>📚</span>
-            <h3 className={styles.finishedTitle}>The book is read</h3>
-            <p className={styles.finishedText}>
-              It was an <strong>exciting journey</strong>, where each page revealed new horizons, and the characters became inseparable friends.
-            </p>
+        <section className={styles.myBookSection}>
+          <h2 className={styles.sectionTitle}>My reading</h2>
+          <div className={styles.bookContent}>
+            <div className={styles.bookCover}>
+              {book.imageUrl ? (
+                <img src={book.imageUrl} alt={book.title} className={styles.bookImage} />
+              ) : (
+                <div className={styles.bookPlaceholder}>
+                  <BookIcon />
+                </div>
+              )}
+            </div>
+            <h3 className={styles.bookTitle}>{book.title}</h3>
+            <p className={styles.bookAuthor}>{book.author}</p>
           </div>
-        </Modal>
-      )}
+          <button
+            className={styles.readingBtn}
+            onClick={handleSubmit(onSubmit)}
+            aria-label={isReading ? 'Stop reading' : 'Start reading'}
+          >
+            {isReading ? (
+              <span className={styles.stopIcon} />
+            ) : (
+              <span className={styles.startIcon} />
+            )}
+          </button>
+        </section>
 
-      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
-    </div>
-   
-   </>
+        {finishedModal && (
+          <Modal onClose={() => setFinishedModal(false)}>
+            <div className={styles.finishedModal}>
+              <span className={styles.finishedEmoji}>📚</span>
+              <h3 className={styles.finishedTitle}>The book is read</h3>
+              <p className={styles.finishedText}>
+                It was an <strong>exciting journey</strong>, where each page revealed new horizons, and the characters became inseparable friends.
+              </p>
+            </div>
+          </Modal>
+        )}
+
+        {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
+      </div>
+    </>
   );
 }
 
