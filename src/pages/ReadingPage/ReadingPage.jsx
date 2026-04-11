@@ -8,6 +8,7 @@ import axiosInstance from '../../api/axiosInstance';
 import Dashboard from '../../components/dashboard/Dashboard';
 import Modal from '../../components/shared/Modal/Modal';
 import Loader from '../../components/shared/Loader/Loader';
+import { BookIcon } from '../../assets/Icons/icons';
 import Toast from '../../components/shared/Toast/Toast';
 import useToast from '../../hooks/useToast';
 import styles from './ReadingPage.module.css';
@@ -55,7 +56,7 @@ function ReadingPage() {
     try {
        setIsLoading(true);
       const { data } = await axiosInstance.get(`/books/${book._id}`);
-      const completedProgress = (data.progress || []).filter(p => p.status === 'inactive');
+      const completedProgress = (data.progress || []).filter(p => p.status === 'inactive') .reverse();
       setProgress(completedProgress);
       const hasActive = (data.progress || []).some(p => p.status === 'active');
       setIsReading(hasActive);
@@ -179,22 +180,35 @@ function ReadingPage() {
                         <p className={styles.diaryPercent}>{calcPercent(item.startPage, item.finishPage)}%</p>
                         <p className={styles.diaryMinutes}>{calcMinutes(item.startReading, item.finishReading)} minutes</p>
                       </div>
-                      <div className={styles.diarySpeedRow}>
-                        <div className={styles.diarySpeedBar}>
-                          <div
-                            className={styles.diarySpeedFill}
-                            style={{ width: `${Math.min(item.speed / 2, 100)}%` }}
-                          />
-                        </div>
-                        <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
-                        <button
-                          className={styles.diaryDeleteBtn}
-                          onClick={() => handleDeleteReading(item._id)}
-                          aria-label="Delete"
-                        >
-                          <TrashIcon />
-                        </button>
-                      </div>
+                    <div className={styles.diarySpeedRow}>
+  <svg width="60" height="20" viewBox="0 0 60 20" className={styles.diaryAreaChart}>
+    <defs>
+      <linearGradient id={`grad-${idx}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#30B94D" stopOpacity="0.6"/>
+        <stop offset="100%" stopColor="#30B94D" stopOpacity="0.05"/>
+      </linearGradient>
+    </defs>
+    <path
+      d={`M0,20 L0,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} C20,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} 40,2 60,2 L60,20 Z`}
+      fill={`url(#grad-${idx})`}
+    />
+    <path
+      d={`M0,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} C20,${Math.max(20 - Math.min(item.speed / 3, 18), 2)} 40,2 60,2`}
+      stroke="#30B94D"
+      strokeWidth="1.5"
+      fill="none"
+      strokeLinecap="round"
+    />
+  </svg>
+  <p className={styles.diarySpeed}>{item.speed} pages<br/>per hour</p>
+  <button
+    className={styles.diaryDeleteBtn}
+    onClick={() => handleDeleteReading(item._id)}
+    aria-label="Delete"
+  >
+    <TrashIcon />
+  </button>
+</div>
                     </div>
                   </div>
                 ))}
@@ -253,9 +267,19 @@ function ReadingPage() {
       <section className={styles.myBookSection}>
         <h2 className={styles.sectionTitle}>My reading</h2>
         <div className={styles.bookContent}>
-          <div className={styles.bookCover}>
-            <img src={book.imageUrl} alt={book.title} className={styles.bookImage} />
-          </div>
+    <div className={styles.bookCover}>
+  {book.imageUrl ? (
+    <img
+      src={book.imageUrl}
+      alt={book.title}
+      className={styles.bookImage}
+    />
+  ) : (
+    <div className={styles.bookPlaceholder}>
+      <BookIcon />
+    </div>
+  )}
+</div>
           <h3 className={styles.bookTitle}>{book.title}</h3>
           <p className={styles.bookAuthor}>{book.author}</p>
         </div>

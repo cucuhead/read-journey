@@ -169,7 +169,15 @@
   height: auto;
   display: block;
 }
-
+.bookPlaceholder {
+  width: 100%;
+  min-height: 280px;
+  background-color: #262626;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .bookTitle {
   font-size: 18px;
   font-weight: 700;
@@ -223,8 +231,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
   min-width: 0;
-  overflow: hidden;
 }
 
 .tabHeader {
@@ -269,7 +277,8 @@
   background-color: #262626;
   border-radius: 12px;
   overflow: hidden;
-  position: relative; /* Çizgi için eklendi */
+  position: relative;
+  width: 100%;
 }
 
 /* Dikey Çizgi */
@@ -420,6 +429,10 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  width: 100%;
+}
+.diaryAreaChart {
+  flex-shrink: 0;
 }
 
 .statsQuote {
@@ -505,17 +518,17 @@
   }
 
   .addReadingBlock {
-    flex: 0 0 auto; 
-    width: 295px; 
+    flex: 0 0 auto;
+    width: 240px;
   }
 
-  .detailsBlock {
-    flex: 1; 
+ .detailsBlock {
+    flex: 1;
     min-width: 0;
-    overflow: hidden;
+    width: auto;
   }
 
-  .progressBlock {
+    .progressBlock {
     flex: 1;
     min-width: 0;
   }
@@ -539,6 +552,18 @@
     width: 350px;
     flex-shrink: 0;
     gap: 20px;
+  }
+
+  .detailsBlock {
+    width: 100%;
+  }
+
+  .diaryList {
+    width: 100%;
+  }
+
+  .statistics {
+    width: 100%;
   }
 
   .myBookSection {
