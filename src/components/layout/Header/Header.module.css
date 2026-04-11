@@ -118,13 +118,12 @@
   background-color: var(--color-bg-secondary);
   width: 60%;
   max-width: 300px;
-  height: 100%;
+  height: 100vh; /* ← 100% yerine 100vh */
   padding: 40px 32px;
   display: flex;
   flex-direction: column;
   position: relative;
 }
-
 .closeBtn {
   align-self: flex-end;
   background: none;
@@ -133,12 +132,11 @@
   padding: 4px;
   margin-bottom: 40px;
 }
-
 .mobileNav {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  flex: 1;
+  flex: 1; /* nav büyür, logout aşağı iter */
 }
 
 .mobileNavLink {
@@ -168,7 +166,8 @@
   font-weight: 500;
   color: var(--color-text-primary);
   cursor: pointer;
-  align-self: center;
+  width: 100%;
+    margin-bottom: 100px; /* alta padding için */
   transition: background-color 0.2s;
 }
 
