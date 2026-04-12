@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/auth/authSlice';
 import { signOut } from '../../../api/authApi';
+import Toast from '../../shared/Toast/Toast'; 
 import styles from './Header.module.css';
 
 function Header() {
@@ -13,7 +14,8 @@ function Header() {
   const user = useSelector(state => state.auth.user);
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
-const [logoutConfirm, setLogoutConfirm] = useState(false);
+  const [logoutConfirm, setLogoutConfirm] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   // Ekran büyüyünce menüyü kapat
   useEffect(() => {
@@ -29,15 +31,24 @@ const [logoutConfirm, setLogoutConfirm] = useState(false);
 const handleLogout = async () => {
   try {
     setLogoutLoading(true);
-    await signOut();
-  } catch {
-    // backend hatası olsa bile logout yap
-  } finally {
+    await signOut(); // Backend isteği
+    // Başarılıysa hemen yönlendir
     dispatch(logout());
     navigate('/login');
+  } catch (error) {
+    // ŞARTNAME: "Hata işlenmeli ve pop-up gösterilmelidir"
+    const errorMessage = error?.response?.data?.message || 'Logout failed.';
+    setErrorMsg(errorMessage);
+
+    // ŞARTNAME: "Backend yanıtından bağımsız olarak de-otorize edilmelidir"
+    // Kullanıcı mesajı okusun diye kısa bir bekleme:
+    setTimeout(() => {
+      dispatch(logout());
+      navigate('/login');
+    }, 2000);
+  } finally {
     setLogoutConfirm(false);
     setLogoutLoading(false);
-    setMenuOpen(false);
   }
 };
 
@@ -45,20 +56,26 @@ const handleLogout = async () => {
 
   return (
     <>
+      {errorMsg && (
+        <Toast 
+          message={errorMsg} 
+          onClose={() => setErrorMsg(null)} 
+        />
+      )}
 
-    {logoutLoading && <Loader />}
-    {logoutConfirm && (
-  <Modal onClose={() => setLogoutConfirm(false)}>
-    <div className={styles.confirmModal}>
-      <h3 className={styles.confirmTitle}>Log out</h3>
-      <p className={styles.confirmText}>Are you sure you want to log out?</p>
-      <div className={styles.confirmBtns}>
-        <button className={styles.confirmYes} onClick={handleLogout}>Yes</button>
-        <button className={styles.confirmNo} onClick={() => setLogoutConfirm(false)}>Cancel</button>
-      </div>
-    </div>
-  </Modal>
-)}
+      {logoutLoading && <Loader />}
+      {logoutConfirm && (
+        <Modal onClose={() => setLogoutConfirm(false)}>
+          <div className={styles.confirmModal}>
+            <h3 className={styles.confirmTitle}>Log out</h3>
+            <p className={styles.confirmText}>Are you sure you want to log out?</p>
+            <div className={styles.confirmBtns}>
+              <button className={styles.confirmYes} onClick={handleLogout}>Yes</button>
+              <button className={styles.confirmNo} onClick={() => setLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </Modal>
+      )}
       <header className={styles.header}>
         <NavLink to="/recommended" className={styles.logo}>
           <svg width="24" height="17" viewBox="0 0 24 17" fill="none">
@@ -89,9 +106,9 @@ const handleLogout = async () => {
         <div className={styles.right}>
           <div className={styles.avatar}>{firstLetter}</div>
           <span className={styles.userName}>{user?.name}</span>
-         <button className={styles.logoutBtn} onClick={() => setLogoutConfirm(true)}>
-  Log out
-</button>
+          <button className={styles.logoutBtn} onClick={() => setLogoutConfirm(true)}>
+            Log out
+          </button>
           <button
             className={styles.burgerBtn}
             onClick={() => setMenuOpen(true)}

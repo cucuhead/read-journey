@@ -212,7 +212,7 @@
   background: transparent;
   border: none;
   color: rgba(249, 249, 249, 0.3); /* Seçili olmayanlar sönük */
-  font-family: 'Gilroy', sans-serif;
+  
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -438,7 +438,7 @@
 
 /* "Good job" Başlığı */
 .successTitle {
-  font-family: 'Gilroy', sans-serif;
+  
   font-weight: 700;
   font-size: 20px;     /* Figma: 20px */
   line-height: 20px;   /* Figma: 20px */
@@ -449,7 +449,7 @@
 
 /* Alt Açıklama Metni */
 .successText {
-  font-family: 'Gilroy', sans-serif;
+ 
   font-weight: 500;
   font-size: 14px;     /* Figma: 14px */
   line-height: 18px;   /* Figma: 18px */
