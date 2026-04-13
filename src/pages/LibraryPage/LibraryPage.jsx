@@ -145,9 +145,16 @@ const onAddBook = async data => {
 
   const filteredBooks = myBooks.filter(book => {
     if (filter === 'all') return true;
-    if (filter === 'unread') return !book.progress || book.progress.length === 0;
-    if (filter === 'inprogress') return book.status === 'active';
+    
+    // Unread: Henüz başlanmamış olanlar
+    if (filter === 'unread') return book.status === 'unread';
+    
+    // In Progress: JSON'dan gelen tam değerle eşitledik
+    if (filter === 'inprogress') return book.status === 'in-progress';
+    
+    // Done: Bitmiş olanlar
     if (filter === 'done') return book.status === 'done';
+    
     return true;
   });
 

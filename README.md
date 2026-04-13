@@ -1,16 +1,67 @@
-# React + Vite
+# 📚 Read Journey
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A book reading tracker app that helps you manage your personal library, track reading progress, and discover new books.
 
-Currently, two official plugins are available:
+## 🔗 Links
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Live Demo:** [read-journey.vercel.app](#) *(deploy sonrası güncellenecek)*
+- **Backend API:** [readjourney.b.goit.study/api-docs](https://readjourney.b.goit.study/api-docs)
+- **GitHub:** [github.com/cucuhead/read-journey](https://github.com/cucuhead/read-journey)
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 📖 Register & Login with JWT authentication
+- 🔍 Browse and search recommended books
+- 📚 Build your personal library
+- ▶️ Track reading sessions (start/stop by page number)
+- 📊 View reading statistics and diary
+- 📱 Fully responsive (mobile, tablet, desktop)
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React 18** + **Vite**
+- **Redux Toolkit** — global state management
+- **React Router v6** — client-side routing
+- **Axios** — HTTP requests
+- **react-hook-form** + **Yup** — form validation
+- **CSS Modules** — scoped styling
+
+## 📦 Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/cucuhead/read-journey.git
+
+# Navigate to project
+cd read-journey
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+## 📁 Project Structure
+
+src/
+├── api/          # Axios instance & API calls
+├── assets/       # Icons, images
+├── components/   # Shared & layout components
+├── hooks/        # Custom hooks
+├── pages/        # Page components
+├── redux/        # Store, slices
+├── router/       # App routing
+└── schemas/      # Yup validation schemas
+
+## 📱 Responsive Breakpoints
+
+| Device  | Breakpoint |
+|---------|-----------|
+| Mobile  | 375px+    |
+| Tablet  | 768px+    |
+| Desktop | 1440px+   |
+
+## 👤 Author
+
+**Burcu Budak** — [github.com/cucuhead](https://github.com/cucuhead)
