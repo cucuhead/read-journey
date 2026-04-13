@@ -4,7 +4,7 @@ A book reading tracker app that helps you manage your personal library, track re
 
 ## 🔗 Links
 
-- **Live Demo:** [read-journey.vercel.app](#) *(deploy sonrası güncellenecek)*
+-- **Live Demo:** [read-journey-beta.vercel.app](https://read-journey-beta.vercel.app)
 - **Backend API:** [readjourney.b.goit.study/api-docs](https://readjourney.b.goit.study/api-docs)
 - **GitHub:** [github.com/cucuhead/read-journey](https://github.com/cucuhead/read-journey)
 
