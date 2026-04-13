@@ -69,22 +69,30 @@
   max-width: 472px; /* Figma ölçüsü */
 }
 
-.inputBox { 
-  background-color: #262626; 
- 
-  border: 1px solid rgba(249, 249, 249, 0.1); 
-  border-radius: 12px; 
-  padding: 0 16px; 
-  height: 50px; /* Figma 50 Hug */
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
+.inputBox {
+  background-color: #262626;
+  border: 1px solid rgba(249, 249, 249, 0.1);
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 8px'den 4px'e düşür */
+  min-width: 0; /* taşmayı önler */
 }
 .inputLabel{
      color:#686868;
 }
 
-.input { flex: 1; background: transparent; border: none; color: #F9F9F9; outline: none; font-size: 14px; }
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #F9F9F9;
+  outline: none;
+  font-size: 14px;
+  min-width: 0; /* ← ekle */
+}
 
 /* Tüm placeholder (yer tutucu) metinlerin rengi */
 .input::placeholder {
@@ -184,6 +192,13 @@
   flex-shrink: 0;
 }
 
+.iconError,
+.iconSuccess {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* ← ekle */
+}
+
 .errorMsg {
   font-size: 12px;
   color: #EF2323;
@@ -203,6 +218,7 @@
   color: #EF2323;
   text-align: center;
 }
+
 .eyeBtn {
   background: transparent;
   border: none;
@@ -211,8 +227,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  /* İkonun rengini belirleyen ana kısım burası */
-  color: #F9F9F9; /* Saf beyaz ya da tasarımındaki açık gri rengi */
+  color: #F9F9F9;
+  flex-shrink: 0; /* ← ekle */
   transition: color 0.2s ease;
 }
 
