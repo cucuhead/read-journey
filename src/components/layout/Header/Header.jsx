@@ -17,7 +17,7 @@ function Header() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  // Ekran büyüyünce menüyü kapat
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -31,17 +31,15 @@ function Header() {
 const handleLogout = async () => {
   try {
     setLogoutLoading(true);
-    await signOut(); // Backend isteği
-    // Başarılıysa hemen yönlendir
+    await signOut(); 
     dispatch(logout());
     navigate('/login');
   } catch (error) {
-    // ŞARTNAME: "Hata işlenmeli ve pop-up gösterilmelidir"
+  
     const errorMessage = error?.response?.data?.message || 'Logout failed.';
     setErrorMsg(errorMessage);
 
-    // ŞARTNAME: "Backend yanıtından bağımsız olarak de-otorize edilmelidir"
-    // Kullanıcı mesajı okusun diye kısa bir bekleme:
+   
     setTimeout(() => {
       dispatch(logout());
       navigate('/login');

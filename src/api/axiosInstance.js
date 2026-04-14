@@ -17,7 +17,6 @@ axiosInstance.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
 
-    // Login ve register isteklerinde retry yapma
     if (
       originalRequest.url.includes('/users/signin') ||
       originalRequest.url.includes('/users/signup')

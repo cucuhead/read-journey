@@ -60,6 +60,7 @@ function LibraryPage() {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchMyBooks();
@@ -89,7 +90,6 @@ const onAddBook = async data => {
       return;
     }
 
-    // Backend'de title+author ile ara
     const { getRecommendedBooks, addBookToLibrary } = await import('../../api/booksApi');
     const searchResult = await getRecommendedBooks(1, 10, data.title, data.author);
     const matchedBook = (searchResult.results || []).find(
@@ -146,13 +146,13 @@ const onAddBook = async data => {
   const filteredBooks = myBooks.filter(book => {
     if (filter === 'all') return true;
     
-    // Unread: Henüz başlanmamış olanlar
+   
     if (filter === 'unread') return book.status === 'unread';
     
-    // In Progress: JSON'dan gelen tam değerle eşitledik
+
     if (filter === 'inprogress') return book.status === 'in-progress';
     
-    // Done: Bitmiş olanlar
+  
     if (filter === 'done') return book.status === 'done';
     
     return true;

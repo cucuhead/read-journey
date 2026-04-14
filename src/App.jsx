@@ -20,8 +20,8 @@ function App() {
 
         const books = await getMyBooks();
         dispatch(setMyBooks(books));
-      } catch {
-        // token geçersizse axiosInstance zaten logout yapacak
+      } catch (err) {
+         console.error(err);
       }
     };
 
