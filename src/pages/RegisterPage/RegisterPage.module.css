@@ -112,6 +112,16 @@
   opacity: 1;
 }
 
+.input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.inputBox:focus-within {
+  outline: none;
+  border-color: rgba(249, 249, 249, 0.3);
+}
+
 .input:-ms-input-placeholder {
   color: #F9F9F9;
 }
