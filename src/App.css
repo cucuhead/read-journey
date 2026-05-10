@@ -1,4 +1,4 @@
-/* Sadece projenin ana taşıyıcı yapısı kalsın */
+
 #center {
   display: flex;
   flex-direction: column;
@@ -13,4 +13,3 @@
   }
 }
 
-/* Diğer her şeyi (hero, next-steps vb.) silebilirsin. */

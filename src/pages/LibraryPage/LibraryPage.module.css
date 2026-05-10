@@ -1,10 +1,10 @@
-/* --- Sayfa Düzeni --- */
+
 .page {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-  /* Sayfanın gereksiz scroll olmasını engellemek için */
+  
  
   box-sizing: border-box;
   background-color: #141414;
@@ -12,7 +12,7 @@
   
 }
 
-/* --- Dashboard (Sol Panel) --- */
+
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
   margin-bottom: 14px;
 }
 
-/* Form Styles */
+
 .form {
   display: flex;
   flex-direction: column;
@@ -84,7 +84,6 @@
 
 
 
-/* --- RECOMMENDED (Dashboard İçindeki 3'lü Düzen) --- */
 .recommendedBlock {
   display: flex;
   flex-direction: column;
@@ -133,7 +132,6 @@
   text-decoration: underline;
 }
 
-/* --- MY LIBRARY (Sağ Panel) --- */
 .librarySection {
   background-color: #1F1F1F;
   border-radius: 30px;
@@ -144,7 +142,7 @@
  
 }
 
-/* Scrollbar Tasarımı (Opsiyonel) */
+
 .librarySection::-webkit-scrollbar {
   width: 6px;
 }
@@ -165,7 +163,7 @@
   font-weight: 700;
 }
 
-/* --- Filter / All Books Dropdown --- */
+
 
 
 .filterBtn {
@@ -181,37 +179,36 @@
   font-size: 14px;
   cursor: pointer;
 }
-/* Filtre Butonunun Sarıcısı */
 .filterWrapper {
   position: relative;
   display: inline-block;
 }
 
-/* Açılır Menü Kutusu */
+
 .filterDropdown {
   position: absolute;
-  top: calc(100% + 8px); /* Butonun hemen altına 8px boşlukla yerleşir */
+  top: calc(100% + 8px); 
   right: 0;
-  width: 150px; /* Figma'daki yaklaşık genişlik */
-  background-color: #262626; /* Figma'daki koyu gri tonu */
+  width: 150px;
+  background-color: #262626;
   border-radius: 12px;
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5); /* Derinlik hissi için */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
 
-/* Her Bir Seçenek (Button) */
+
 .filterOption {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Yazıları sola yasla */
+  justify-content: flex-start; 
   padding: 10px 12px;
   background: transparent;
   border: none;
-  color: rgba(249, 249, 249, 0.3); /* Seçili olmayanlar sönük */
+  color: rgba(249, 249, 249, 0.3); 
   
   font-size: 14px;
   font-weight: 500;
@@ -229,17 +226,17 @@
   height: 90%;
   min-height: 100px;
 }
-/* Hover ve Aktif Durumu */
+
 .filterOption:hover {
   background-color: rgba(249, 249, 249, 0.05);
   color: #F9F9F9;
 }
 
 .filterOptionActive {
-  color: #F9F9F9 !important; /* Seçili olan parlak beyaz */
+  color: #F9F9F9 !important;
 }
 
-/* --- Kütüphane Kitap Grid'i --- */
+
 .bookGrid {
   display: flex;
   flex-wrap: wrap;
@@ -255,13 +252,13 @@
 }
 
 .bookCard {
-  position: relative; /* Çöp kutusu bunun içinde konumlanacak */
+  position: relative; 
   cursor: pointer;
 }
 
 .imageWrapper {
   width: 100%;
-  aspect-ratio: 137 / 180;  /* 213 yerine 180 */
+  aspect-ratio: 137 / 180; 
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -274,7 +271,7 @@
   object-fit: cover;
 }
 
-/* Delete Button - Kitabın sağ altında */
+
 .deleteBtn {
   width: 28px;
   height: 28px;
@@ -324,7 +321,6 @@
   text-overflow: ellipsis;
 }
 
-/* --- Modal Stilleri --- */
 .bookModalContent {
   display: flex;
   flex-direction: column;
@@ -416,103 +412,97 @@
   margin-bottom: 16px;
 }
 
-/* --- Success Modal Ana Konteynır --- */
 .successModal {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 342px;    /* Figma ölçüsü */
-  height: 290px;   /* Figma ölçüsü */
-  padding: 0 50px; /* Yazıların yanlardan çok taşmaması için */
+  width: 342px;   
+  height: 290px;   
+  padding: 0 50px; 
   box-sizing: border-box;
 }
 
-/* Başarı Emojisi */
 .successEmoji {
-  font-size: 50px; /* Figma'daki görsel boyuta göre */
+  font-size: 50px; 
   margin-bottom: 20px;
   display: block;
 }
 
-/* "Good job" Başlığı */
+
 .successTitle {
   
   font-weight: 700;
-  font-size: 20px;     /* Figma: 20px */
-  line-height: 20px;   /* Figma: 20px */
-  letter-spacing: -0.02em; /* Figma: -2% */
-  color: #F9F9F9;      /* Figma: #F9F9F9 */
+  font-size: 20px;     
+  line-height: 20px;  
+  letter-spacing: -0.02em; 
+  color: #F9F9F9;     
   margin: 0 0 10px 0;
 }
 
-/* Alt Açıklama Metni */
+
 .successText {
  
   font-weight: 500;
-  font-size: 14px;     /* Figma: 14px */
-  line-height: 18px;   /* Figma: 18px */
-  letter-spacing: -0.02em; /* Figma: -2% */
-  color: rgba(249, 249, 249, 0.5); /* Figma'daki o sönük beyaz */
+  font-size: 14px;    
+  line-height: 18px;  
+  letter-spacing: -0.02em;
+  color: rgba(249, 249, 249, 0.5); 
   margin: 0;
 }
 
-/* Metin içindeki "the library!" vurgusu */
 .successText strong {
   color: #F9F9F9;
   font-weight: 500;
 }
 
-/* --- TABLET AYARLARI (768px - 1439px) --- */
-/* --- TABLET AYARLARI (768px - 1439px) --- */
+
 @media (min-width: 768px) and (max-width: 1439px) {
   .dashboard {
     flex-direction: row; 
-    align-items: stretch; /* Kartların boyunu eşitlemek için */
+    align-items: stretch; 
     gap: 32px;
     padding: 40px;
   }
 
-  /* Form tarafı (Kartsız) */
   .addBookBlock {
     flex: 1;
-    background-color: transparent; /* İstediğin gibi tablette formun kartını kaldırdık */
+    background-color: transparent;
     padding: 0;
-    min-width: 0; /* Taşmayı önleyen sihirli dokunuş */
+    min-width: 0; 
   }
 
-  /* Recommended tarafı (KARTLI) */
+  
   .recommendedBlock {
     flex: 1;
-    background-color: #262626; /* Sadece burası silik kart */
+    background-color: #262626;
     padding: 20px;
     border-radius: 15px;
-    min-width: 0; /* Taşmayı önler */
+    min-width: 0; 
   }
 
-  /* Kartların içindeki resimlerin taşmasını önlemek için */
   .recommendedGrid {
     display: flex;
     flex-direction: row;
     gap: 12px;
-    overflow: hidden; /* Dışarı sarkmayı engeller */
+    overflow: hidden; 
   }
 
   .recommendedCard {
-    /* 3 kitap sığmıyorsa 100% üzerinden paylaştırıyoruz */
+  
     flex: 1; 
     min-width: 0; 
   }
 
-  /* Kütüphane listesi tablette 3'lü dizilsin (Taşma yapmaması için gap'i hesaba katarak) */
+ 
   .bookItem {
     flex: 0 0 calc((100% - 40px) / 3);
     max-width: calc((100% - 40px) / 3);
   }
 }
 
-/* --- DESKTOP AYARLARI (1440px) --- */
+
 @media (min-width: 1440px) {
     .imageWrapper {
     aspect-ratio: 137 / 160;
@@ -520,11 +510,11 @@
   .page {
     
     flex-direction: row;
-     align-items: stretch;/* Her iki panelin boyunu eşitle */
+     align-items: stretch;
   }
 .dashboard {
     width: 350px;
-    flex-direction: column; /* Masaüstünde tekrar alt alta */
+    flex-direction: column; 
     gap: 20px;
   }
 

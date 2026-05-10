@@ -1,4 +1,4 @@
-/* ─── Header card ─── */
+
 .header {
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@
   padding: 4px;
 }
 
-/* ─── Mobile menu overlay ─── */
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -118,7 +118,7 @@
   background-color: var(--color-bg-secondary);
   width: 60%;
   max-width: 300px;
-  height: 100vh; /* ← 100% yerine 100vh */
+  height: 100vh; 
   padding: 40px 32px;
   display: flex;
   flex-direction: column;
@@ -136,7 +136,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  flex: 1; /* nav büyür, logout aşağı iter */
+  flex: 1; 
 }
 
 .mobileNavLink {
@@ -167,7 +167,7 @@
   color: var(--color-text-primary);
   cursor: pointer;
   width: 100%;
-    margin-bottom: 100px; /* alta padding için */
+    margin-bottom: 100px; 
   transition: background-color 0.2s;
 }
 
@@ -175,7 +175,7 @@
   background-color: var(--color-bg-card);
 }
 
-/* ─── Tablet (768px) ─── */
+
 @media (min-width: 768px) {
   .header {
     height: 64px;
@@ -198,13 +198,12 @@
     display: none;
   }
 
-  /* Tablet ve üstünde overlay CSS seviyesinde de gizli */
   .overlay {
     display: none;
   }
 }
 
-/* ─── Desktop (1440px) ─── */
+
 @media (min-width: 1440px) {
   .header {
     height: 72px;

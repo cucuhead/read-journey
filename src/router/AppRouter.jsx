@@ -12,13 +12,13 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
+       
         <Route element={<PublicRoute />}>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
         </Route>
 
-        {/* Private routes */}
+       
         <Route element={<PrivateRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/recommended" element={<RecommendedPage />} />
@@ -27,7 +27,7 @@ function AppRouter() {
           </Route>
         </Route>
 
-        {/* Default redirect */}
+        
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

@@ -1,4 +1,4 @@
-/* ─── Mobile first ─── */
+
 .page {
   display: flex;
   flex-direction: column;
@@ -7,17 +7,15 @@
   padding: 16px;
 }
 
-/* ── Dashboard (Tüm sol içeriği kapsayan ana kart) ── */
 .dashboard {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background-color: var(--color-bg-secondary); /* Kart arka planı */
+  background-color: var(--color-bg-secondary); 
   border-radius: 16px;
   padding: 20px;
 }
 
-/* İç blokların artık kendi bağımsız kart özelliklerine ihtiyacı yok */
 .filtersBlock, .workoutBlock, .quoteBlock {
   display: flex;
   flex-direction: column;
@@ -168,7 +166,6 @@
   font-style: italic;
 }
 
-/* ── Books section ── */
 .booksSection {
   background-color: var(--color-bg-secondary);
   border-radius: 16px;
@@ -220,7 +217,7 @@
   cursor: not-allowed;
 }
 
-/* ─── FLEXBOOK GRID ─── */
+
 .bookGrid {
   display: flex;
   flex-wrap: wrap;
@@ -238,7 +235,7 @@
   min-width: 0;
 }
 
-/* ─── Tablet (768px) ─── */
+
 @media (min-width: 768px) {
   .page {
     padding: 16px;
@@ -252,7 +249,6 @@
     gap: 16px;
   }
 
-  /* Tablette de tek kart görünümü devam etsin diye özel grid ayarı gerekirse buraya eklenir */
 
   .bookGrid > li {
     flex: 0 0 calc(25% - 15px);
@@ -260,7 +256,7 @@
   }
 }
 
-/* ─── Desktop (1440px) ─── */
+
 @media (min-width: 1440px) {
   .page {
     flex-direction: row;
@@ -275,7 +271,7 @@
     gap: 20px;
     width: 280px;
     flex-shrink: 0;
-    /* Masaüstünde tek blok yükseklik eşitleme */
+    
   }
 
   .booksSection {

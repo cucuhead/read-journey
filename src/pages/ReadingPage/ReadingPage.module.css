@@ -1,4 +1,4 @@
-/* ─── Mobile first ─── */
+
 .page {
   display: flex;
   flex-direction: column;
@@ -7,7 +7,7 @@
   padding: 16px;
 }
 
-/* ── Dashboard ── */
+
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -96,7 +96,7 @@
   color: #1F1F1F;
 }
 
-/* Progress */
+
 .progressBlock {
   display: flex;
   flex-direction: column;
@@ -132,7 +132,7 @@
   font-size: 28px;
 }
 
-/* ── MyBook Section ── */
+
 .myBookSection {
   background-color: #1F1F1F;
   border-radius: 30px;
@@ -191,7 +191,7 @@
   text-align: center;
 }
 
-/* Kırmızı buton */
+
 .readingBtn {
   width: 50px;
   height: 50px;
@@ -226,7 +226,7 @@
   display: block;
 }
 
-/* ── Details (Diary/Statistics) ── */
+
 .detailsBlock {
   display: flex;
   flex-direction: column;
@@ -269,7 +269,7 @@
   color: #F9F9F9;
 }
 
-/* Diary — sadece durak ve çizgi eklendi */
+
 .diaryList {
   display: flex;
   flex-direction: column;
@@ -281,7 +281,7 @@
   width: 100%;
 }
 
-/* Dikey Çizgi */
+
 .diaryList::before {
   content: '';
   position: absolute;
@@ -295,20 +295,20 @@
 
 .diaryItem {
   background-color: transparent;
-  padding: 14px 16px 14px 45px; /* Sol boşluk durak için artırıldı */
+  padding: 14px 16px 14px 45px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  position: relative; /* Durak için eklendi */
+  position: relative; 
   z-index: 2;
 }
 
 .diaryItem:last-child {
   border-bottom: none;
 }
-/* İlk elemanın (en son tarih) kutucuğunu beyaz yapar */
+
 .diaryItem:first-child .diaryCheckbox {
-  border-color: #F9F9F9; /* Beyaz/Açık gri border */
+  border-color: #F9F9F9;
    
 }
 
@@ -320,7 +320,7 @@
   flex-wrap: wrap;
 }
 
-/* Durak (Checkbox görünümlü kareler) */
+
 .diaryCheckbox {
   position: absolute;
   left: 16px;
@@ -423,7 +423,6 @@
   opacity: 1;
 }
 
-/* Statistics */
 .statistics {
   display: flex;
   flex-direction: column;
@@ -472,7 +471,7 @@
   color: rgba(249, 249, 249, 0.5);
 }
 
-/* ── Finished Modal ── */
+
 .finishedModal {
   display: flex;
   flex-direction: column;
@@ -503,7 +502,7 @@
   color: #F9F9F9;
 }
 
-/* ─── Tablet (768px) ─── */
+
 @media (min-width: 768px) {
   .page {
     padding: 16px;
@@ -538,7 +537,7 @@
   }
 }
 
-/* ─── Desktop (1440px) ─── */
+
 @media (min-width: 1440px) {
   .page {
     flex-direction: row;

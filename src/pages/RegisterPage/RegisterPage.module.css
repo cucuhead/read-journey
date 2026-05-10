@@ -1,37 +1,35 @@
-/* Sayfanın en arka zemini */
+
 .page {
   height: 100vh;
   background-color: #111111;
   display: flex;
-  padding: 32px; /* Dış boşluk 32px */
+  padding: 32px;
   box-sizing: border-box;
 }
 
-/* Kartları tutan ana konteyner */
 .container {
   display: flex;
   flex: 1;
-  gap: 16px; /* Kartlar arası 16px */
+  gap: 16px;
   width: 100%;
 }
 
-/* O silik siyah cardlar (EŞİT GENİŞLİK - Tam %50) */
 .formCard, .imageCard {
   background-color: #1F1F1F;
   border-radius: 30px;
   overflow: hidden;
   height: 100%;
-  flex: 1 1 0; /* Tam eşitlik sağlar */
+  flex: 1 1 0;
   width: 0;
 }
 
-/* SOL PANEL: FORM DÜZENİ */
+
 .formCard {
   padding: 64px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* İçeriği yatayda ortalar */
-  justify-content: center; /* İçeriği dikeyde ortalar */
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   position: relative;
 }
@@ -45,9 +43,13 @@
   left: 40px;
 }
 
-.logoText { font-size: 12px; font-weight: 700; color: #F9F9F9; text-transform: uppercase; }
+.logoText {
+  font-size: 12px;
+  font-weight: 700;
+  color: #F9F9F9;
+  text-transform: uppercase;
+}
 
-/* Başlık Alanı (444x180 Ölçüsüne Göre) */
 .title { 
   font-size: 54px; 
   font-weight: 700; 
@@ -55,18 +57,26 @@
   color: #F9F9F9; 
   letter-spacing: -0.02em;
   margin-bottom: 40px;
-  max-width: 444px; /* Figma ölçüsü */
+  max-width: 444px;
 }
 
-.titleAccent { color: rgba(249, 249, 249, 0.5); font-weight: 400; }
+.titleAccent {
+  color: rgba(249, 249, 249, 0.5);
+  font-weight: 400;
+}
 
-/* Form (472px Hug Ölçüsüne Göre) */
 .form { 
   display: flex; 
   flex-direction: column; 
   gap: 14px; 
   width: 100%;
-  max-width: 472px; /* Figma ölçüsü */
+  max-width: 472px;
+}
+
+.fieldWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .inputBox {
@@ -77,11 +87,14 @@
   height: 50px;
   display: flex;
   align-items: center;
-  gap: 4px; /* 8px'den 4px'e düşür */
-  min-width: 0; /* taşmayı önler */
+  gap: 4px;
+  min-width: 0;
 }
-.inputLabel{
-     color:#686868;
+
+.inputLabel {
+  color: #686868;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .input {
@@ -91,58 +104,51 @@
   color: #F9F9F9;
   outline: none;
   font-size: 14px;
-  min-width: 0; /* ← ekle */
+  min-width: 0;
 }
 
-/* Tüm placeholder (yer tutucu) metinlerin rengi */
 .input::placeholder {
   color: #F9F9F9;
-  opacity: 1; /* Tarayıcıların varsayılan şeffaflığını sıfırlar */
+  opacity: 1;
 }
 
-/* Internet Explorer için (isteğe bağlı) */
 .input:-ms-input-placeholder {
   color: #F9F9F9;
 }
 
-/* Microsoft Edge için (isteğe bağlı) */
 .input::-ms-input-placeholder {
   color: #F9F9F9;
 }
 
-/* Input'a tıklandığında (focus olduğunda) placeholder'ı tamamen şeffaf yap */
 .input:focus::placeholder {
   color: transparent;
 }
 
-/* Buton ve Link Alanı (20px Boşluk) */
 .actions { 
   display: flex; 
   align-items: center; 
-  gap: 20px; /* Buton ile yazı arası 20px */
+  gap: 20px;
   margin-top: 20px;
 }
 
 .submitBtn { 
   background-color: #F9F9F9; 
-  color:#1F1F1F;
-  border: 1px solid rgba(249, 249, 249, 0.2);
+  color: #1F1F1F;
   border-radius: 30px; 
   padding: 16px 40px; 
   font-weight: 700; 
   border: none; 
   cursor: pointer;
-}
-.submitBtn:hover{
-    color: #F9F9F9; 
-     background-color: #1F1F1F; 
-     border: 1px solid rgba(249, 249, 249, 0.2);
-  border-radius: 30px;
+  transition: all 0.2s;
 }
 
-/* Link Yazısı (Gilroy 500 - 14px - #686868) */
+.submitBtn:hover {
+  color: #F9F9F9; 
+  background-color: #1F1F1F; 
+  border: 1px solid rgba(249, 249, 249, 0.2);
+}
+
 .link { 
- 
   font-size: 14px; 
   font-weight: 500; 
   color: #686868; 
@@ -151,14 +157,12 @@
   white-space: nowrap;
 }
 
-/* SAĞ PANEL: GÖRSEL KARTI */
 .imageCard { 
   position: relative; 
   display: flex; 
   justify-content: center; 
 }
 
-/* Görselin 80px aşağıdan başlaması */
 .imageCard::after { 
   content: ""; 
   position: absolute; 
@@ -169,7 +173,15 @@
   background-image: url('../../assets/wallpaper.png'); 
   background-size: contain; 
   background-repeat: no-repeat; 
-  background-position: center top; 
+  background-position: center top;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .imageCard::after {
+    background-image: url('../../assets/wallpaper.png');
+    background-size: contain;
+  }
 }
 
 .inputBoxError {
@@ -180,23 +192,11 @@
   border-color: #30B94D !important;
 }
 
-.iconError {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.iconSuccess {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
 .iconError,
 .iconSuccess {
   display: flex;
   align-items: center;
-  flex-shrink: 0; /* ← ekle */
+  flex-shrink: 0;
 }
 
 .errorMsg {
@@ -228,30 +228,30 @@
   justify-content: center;
   cursor: pointer;
   color: #F9F9F9;
-  flex-shrink: 0; /* ← ekle */
+  flex-shrink: 0;
   transition: color 0.2s ease;
 }
 
 .eyeBtn:hover {
-  color: #ffffff; /* Üzerine gelince biraz daha parlaması için */
+  color: #ffffff;
 }
 
-/* Eğer SVG içinde stroke veya fill özelliği sabitlenmişse garantiye alalım */
 .eyeBtn svg {
-  stroke: currentColor; /* SVG'nin rengini yukarıdaki 'color' değerinden almasını sağlar */
+  stroke: currentColor;
 }
-/* ─── TABLET DÜZENİ (Ekran Görselini Kaldırma) ─── */
+
+
 @media (min-width: 768px) and (max-width: 1279px) {
   .imageCard {
-    display: none; /* Tablette görsel kartı tamamen gider */
+    display: none;
   }
   .formCard {
     flex: none;
-    width: 100%; /* Form kartı tüm alanı kaplar */
+    width: 100%;
   }
 }
 
-/* ─── MOBİL DÜZEN (Tablet & Telefon) ─── */
+
 @media (max-width: 767px) {
   .page { height: auto; padding: 20px; }
   .container { flex-direction: column; gap: 10px; }
